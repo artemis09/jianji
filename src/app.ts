@@ -1,19 +1,44 @@
 import { createElement, PropsWithChildren } from 'react'
-import { useLaunch } from '@tarojs/taro'
+import Taro, { useLaunch } from '@tarojs/taro'
+import { AuthProvider, useAuth } from '@/contexts/AuthContext'
 import { ThemeProvider } from '@/contexts/ThemeContext'
 import { setupNetworkListener, triggerSync } from '@/services/sync'
 
 import './app.scss'
 
-function App({ children }: PropsWithChildren<any>) {
+function AppBootstrap({ children }: PropsWithChildren<any>) {
+  const { login } = useAuth()
+
   useLaunch(() => {
     setupNetworkListener()
-    void triggerSync()
+
+    void (async () => {
+      try {
+        const user = await login()
+        if (!user.phone) {
+          Taro.redirectTo({ url: '/pages/login/index' })
+          return
+        }
+        await triggerSync()
+      } catch (err) {
+        console.error('silentLogin failed', err)
+      }
+    })()
   })
 
-  return createElement(ThemeProvider, null, children)
+  return children
 }
-  
 
+function App({ children }: PropsWithChildren<any>) {
+  return createElement(
+    ThemeProvider,
+    null,
+    createElement(
+      AuthProvider,
+      null,
+      createElement(AppBootstrap, null, children),
+    ),
+  )
+}
 
 export default App

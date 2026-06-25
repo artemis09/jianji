@@ -1,3 +1,23 @@
-.stats {
-  padding: 32px;
+.page-stats {
+  min-height: 100vh;
+  background: var(--page-bg);
+  padding-top: 48px;
+}
+
+.page-stats__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px 8px;
+}
+
+.page-stats__title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.page-stats__picker {
+  font-size: 14px;
+  color: var(--text-secondary);
 }

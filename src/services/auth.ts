@@ -1,5 +1,6 @@
 import Taro from '@tarojs/taro'
 import type { User } from '@/types'
+import { initDefaultCategories } from './categories'
 import { storage } from './storage'
 
 export async function silentLogin(): Promise<User> {
@@ -11,8 +12,12 @@ export async function silentLogin(): Promise<User> {
   if (!user) {
     user = { openid, theme: storage.getTheme() }
     storage.setUser(user)
+  } else if (user.openid !== openid) {
+    user = { ...user, openid }
+    storage.setUser(user)
   }
 
+  initDefaultCategories(openid)
   return user
 }
 

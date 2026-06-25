@@ -1,0 +1,38 @@
+.record-list {
+  padding: 0 16px 100px;
+}
+
+.record-list__group {
+  margin-bottom: 16px;
+}
+
+.record-list__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.record-list__header--timeline {
+  padding-left: 4px;
+}
+
+.record-list__timeline {
+  width: 3px;
+  height: 16px;
+  border-radius: 2px;
+  background: var(--primary-gradient);
+}
+
+.record-list__date {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.record-list__empty {
+  display: block;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 14px;
+  padding: 40px 0;
+}

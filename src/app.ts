@@ -1,5 +1,6 @@
-import { PropsWithChildren } from 'react'
+import { createElement, PropsWithChildren } from 'react'
 import { useLaunch } from '@tarojs/taro'
+import { ThemeProvider } from '@/contexts/ThemeContext'
 
 import './app.scss'
 
@@ -8,8 +9,7 @@ function App({ children }: PropsWithChildren<any>) {
     console.log('App launched.')
   })
 
-  // children 是将要会渲染的页面
-  return children
+  return createElement(ThemeProvider, null, children)
 }
   
 

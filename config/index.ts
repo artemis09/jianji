@@ -1,3 +1,4 @@
+import path from 'path'
 import { defineConfig, type UserConfigExport } from '@tarojs/cli'
 
 import devConfig from './dev'
@@ -30,6 +31,9 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
     },
     framework: 'react',
     compiler: 'vite',
+    alias: {
+      '@': path.resolve(__dirname, '..', 'src'),
+    },
     mini: {
       postcss: {
         pxtransform: {

@@ -2,5 +2,11 @@
 .idea/
 node_modules/
 dist/
+deploy_versions/
+.temp/
+.rn_temp/
+.swc
 *.log
+*.local
 .env
+.DS_Store

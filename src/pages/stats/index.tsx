@@ -84,7 +84,11 @@ export default function StatsPage() {
 
       <SegToggle value={statType} onChange={setStatType} />
 
-      <DonutChart total={chartTotal} label={statType === 'expense' ? '总支出' : '总收入'} />
+      <DonutChart
+        total={chartTotal}
+        label={statType === 'expense' ? '总支出' : '总收入'}
+        segments={rankItems}
+      />
       <Text className='section-title'>分类排行</Text>
       <RankList items={rankItems} />
     </View>

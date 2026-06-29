@@ -10,6 +10,7 @@ const TOKEN_CSS_VARS: Record<keyof ThemeTokens, string> = {
   primary: '--primary',
   primaryGradient: '--primary-gradient',
   btnGradient: '--btn-gradient',
+  btnText: '--btn-text',
   expense: '--expense',
   income: '--income',
   glow: '--glow',

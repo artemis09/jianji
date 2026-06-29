@@ -23,6 +23,7 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
       path.join(__dirname, 'plugins/fix-weapp-dist.ts'),
     ],
     defineConstants: {
+      TARO_APP_CLOUD_ENV: JSON.stringify(process.env.TARO_APP_CLOUD_ENV || ''),
     },
     copy: {
       patterns: [

@@ -1,84 +1,24 @@
+@import '@/styles/add-form.scss';
+
 .page-add {
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
   padding-bottom: env(safe-area-inset-bottom);
+  box-sizing: border-box;
 }
 
-.page-add__amount-wrap {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 8px;
-  margin: 12px var(--space-page) 8px;
-}
-
-.page-add__currency {
-  font-size: var(--text-title);
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-.page-add__amount {
-  font-size: var(--text-amount-lg);
-  font-weight: 800;
-  color: var(--text-primary);
-  line-height: 1.1;
-  letter-spacing: -1px;
-}
-
-.page-add__footer {
-  display: flex;
-  align-items: stretch;
-  gap: var(--space-item);
-  padding: var(--space-section) var(--space-page) 32px;
-  margin-top: auto;
-}
-
-.page-add__date {
-  padding: 20px 24px;
-  background: var(--surface);
-  border-radius: var(--radius-item);
-  border: 1px solid var(--surface-border);
-  min-width: 160px;
-  min-height: 88px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.page-add__date-label {
-  font-size: var(--text-caption);
-  color: var(--text-secondary);
-  margin-bottom: 4px;
-}
-
-.page-add__date-value {
-  font-size: var(--text-body);
-  color: var(--text-primary);
-  font-weight: 600;
-}
-
-.page-add__done {
-  flex: 1;
-  text-align: center;
-  padding: 20px;
-  border-radius: var(--radius-item);
+.page-add__brand-bar {
+  flex-shrink: 0;
+  padding: var(--page-header-top) var(--space-page) 20px;
   background: var(--btn-gradient);
-  color: #1c1917;
+  text-align: center;
+}
+
+.page-add__brand {
+  font-size: var(--text-heading);
   font-weight: 700;
-  font-size: var(--text-title);
-  min-height: 88px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.page-add__done--disabled {
-  opacity: 0.4;
-}
-
-.theme-root--dark .page-add__done,
-.theme-root--mint .page-add__done,
-.theme-root--candy .page-add__done {
-  color: #fff;
+  color: var(--btn-text);
+  letter-spacing: 6px;
 }

@@ -1,7 +1,7 @@
 import type { User } from '@/types'
 import { initDefaultCategories } from './categories'
 import { callCloudFunction, initCloud } from './cloud'
-import { pullFromCloud } from './sync'
+import { getPendingSyncCount, pullFromCloud, scheduleSync } from './sync'
 import { storage } from './storage'
 
 async function fetchCloudLogin(): Promise<User> {
@@ -19,8 +19,11 @@ async function fetchCloudLogin(): Promise<User> {
   // 从云端拉取已有数据，避免新设备产生重复
   await pullFromCloud()
 
-  // 如果 pullFromCloud 已经拉取了分类，initDefaultCategories 内部会跳过
+  // 版本升级时替换为最新预设分类
   initDefaultCategories(openid)
+  if (getPendingSyncCount() > 0) {
+    scheduleSync(500)
+  }
   return user
 }
 
@@ -29,6 +32,9 @@ export async function silentLogin(): Promise<User> {
   const cached = storage.getUser()
   if (cached?.openid) {
     initDefaultCategories(cached.openid)
+    if (getPendingSyncCount() > 0) {
+      scheduleSync(500)
+    }
     return cached
   }
   return fetchCloudLogin()

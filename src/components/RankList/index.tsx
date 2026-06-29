@@ -3,6 +3,7 @@ import { formatAmount } from '@/utils/amount'
 import './index.scss'
 
 export interface RankItem {
+  id?: string
   name: string
   amount: number
   percent: number
@@ -11,13 +12,14 @@ export interface RankItem {
 
 interface RankListProps {
   items: RankItem[]
+  emptyHint?: string
 }
 
-export default function RankList({ items }: RankListProps) {
+export default function RankList({ items, emptyHint = '本月暂无数据' }: RankListProps) {
   if (items.length === 0) {
     return (
       <View className='rank-list__empty-wrap'>
-        <Text className='rank-list__empty'>本月暂无数据</Text>
+        <Text className='rank-list__empty'>{emptyHint}</Text>
       </View>
     )
   }
@@ -25,7 +27,7 @@ export default function RankList({ items }: RankListProps) {
   return (
     <View className='rank-list'>
       {items.map(item => (
-        <View key={item.name} className='rank-list__row'>
+        <View key={item.id || item.name} className='rank-list__row'>
           <View className='rank-list__top'>
             <View className='rank-list__left'>
               <View className='rank-list__dot' style={{ background: item.color }} />

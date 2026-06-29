@@ -1,5 +1,5 @@
 import { View, Text, Canvas } from '@tarojs/components'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Taro from '@tarojs/taro'
 import './index.scss'
 
@@ -18,6 +18,7 @@ const CHART_WIDTH = 344
 const CHART_HEIGHT = 220
 
 export default function TrendChart({ data }: TrendChartProps) {
+  const [expanded, setExpanded] = useState(false)
   const hasData = data.length > 0
 
   const maxValue = useMemo(() => {
@@ -27,7 +28,7 @@ export default function TrendChart({ data }: TrendChartProps) {
   }, [data, hasData])
 
   useEffect(() => {
-    if (!hasData) return
+    if (!hasData || !expanded) return
 
     const query = Taro.createSelectorQuery()
     query.select('#trend-canvas')
@@ -73,30 +74,51 @@ export default function TrendChart({ data }: TrendChartProps) {
           ctx.fillText(label, x, CHART_HEIGHT - 8)
         })
       })
-  }, [data, maxValue, hasData])
+  }, [data, maxValue, hasData, expanded])
 
   if (!hasData) {
     return (
-      <View className='trend-chart__empty'>
-        <Text className='trend-chart__empty-text'>暂无趋势数据</Text>
+      <View className={`trend-chart ${expanded ? '' : 'trend-chart--collapsed'}`}>
+        <View
+          className='trend-chart__header pressable'
+          onClick={() => setExpanded(v => !v)}
+        >
+          <Text className='trend-chart__title'>近6月趋势</Text>
+          <Text className={`trend-chart__arrow ${expanded ? 'trend-chart__arrow--open' : ''}`}>▼</Text>
+        </View>
+        {expanded && (
+          <View className='trend-chart__empty-body'>
+            <Text className='trend-chart__empty-text'>暂无趋势数据</Text>
+          </View>
+        )}
       </View>
     )
   }
 
   return (
-    <View className='trend-chart'>
-      <Text className='trend-chart__title'>近6月趋势</Text>
-      <View className='trend-chart__legend'>
-        <View className='trend-chart__legend-item'>
-          <View className='trend-chart__legend-dot' style={{ background: '#fb923c' }} />
-          <Text className='trend-chart__legend-label'>支出</Text>
-        </View>
-        <View className='trend-chart__legend-item'>
-          <View className='trend-chart__legend-dot' style={{ background: '#4ade80' }} />
-          <Text className='trend-chart__legend-label'>收入</Text>
-        </View>
+    <View className={`trend-chart ${expanded ? '' : 'trend-chart--collapsed'}`}>
+      <View
+        className='trend-chart__header pressable'
+        onClick={() => setExpanded(v => !v)}
+      >
+        <Text className='trend-chart__title'>近6月趋势</Text>
+        <Text className={`trend-chart__arrow ${expanded ? 'trend-chart__arrow--open' : ''}`}>▼</Text>
       </View>
-      <Canvas type='2d' id='trend-canvas' className='trend-chart__canvas' />
+      {expanded && (
+        <>
+          <View className='trend-chart__legend'>
+            <View className='trend-chart__legend-item'>
+              <View className='trend-chart__legend-dot' style={{ background: '#fb923c' }} />
+              <Text className='trend-chart__legend-label'>支出</Text>
+            </View>
+            <View className='trend-chart__legend-item'>
+              <View className='trend-chart__legend-dot' style={{ background: '#4ade80' }} />
+              <Text className='trend-chart__legend-label'>收入</Text>
+            </View>
+          </View>
+          <Canvas type='2d' id='trend-canvas' className='trend-chart__canvas' />
+        </>
+      )}
     </View>
   )
 }

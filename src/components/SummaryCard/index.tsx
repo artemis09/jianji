@@ -1,6 +1,7 @@
 import { View, Text } from '@tarojs/components'
 import { useTheme } from '@/contexts/ThemeContext'
 import { formatAmount } from '@/utils/amount'
+import { THEME_META } from '@/themes/meta'
 import './index.scss'
 
 interface SummaryCardProps {
@@ -12,19 +13,19 @@ interface SummaryCardProps {
 
 export default function SummaryCard({ income, expense, balance, budget }: SummaryCardProps) {
   const { themeId } = useTheme()
-  const isWarm = themeId === 'warm'
+  const accentCard = THEME_META[themeId].accentCard
 
   const budgetPct = budget ? Math.min((budget.expense / budget.amount) * 100, 100) : 0
   const isOverBudget = budget && budget.expense > budget.amount
   const overAmount = isOverBudget ? budget.expense - budget.amount : 0
 
   return (
-    <View className={`summary-card ${isWarm ? 'summary-card--warm' : ''}`}>
+    <View className={`summary-card ${accentCard ? 'summary-card--accent' : ''}`}>
       <View className='summary-card__inner'>
         <Text className='summary-card__label'>本月结余 (元)</Text>
         <View className='summary-card__balance-row'>
           <Text className='summary-card__currency'>¥</Text>
-          <Text className={`summary-card__balance ${isWarm ? 'summary-card__balance--gradient' : ''}`}>
+          <Text className={`summary-card__balance ${accentCard ? 'summary-card__balance--gradient' : ''}`}>
             {formatAmount(balance)}
           </Text>
         </View>

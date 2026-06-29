@@ -1,4 +1,4 @@
-export type ThemeId = 'warm' | 'mint' | 'dark' | 'candy' | 'caramel'
+export type ThemeId = 'shark' | 'qing' | 'suishou' | 'miao' | 'midnight'
 export type RecordType = 'expense' | 'income'
 export type SyncStatus = 'synced' | 'pending' | 'deleted'
 
@@ -53,9 +53,11 @@ export interface ThemeTokens {
   primary: string
   primaryGradient: string
   btnGradient: string
+  btnText: string
   expense: string
   income: string
   glow?: string
+  isDark: boolean
 }
 
 export interface Budget {

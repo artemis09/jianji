@@ -1,9 +1,12 @@
-.page-categories__del {
-  color: var(--expense);
-  font-size: var(--text-body);
-  padding: 8px 16px;
+.page-categories__body {
+  padding-bottom: calc(var(--space-section) + env(safe-area-inset-bottom));
 }
 
-.page-categories__form {
-  margin-top: var(--space-section);
+.page-categories__hint {
+  display: block;
+  padding: 0 var(--space-page);
+  font-size: var(--text-caption);
+  color: var(--text-secondary);
+  text-align: center;
+  line-height: 1.5;
 }

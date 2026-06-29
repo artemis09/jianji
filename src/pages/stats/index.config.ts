@@ -1,3 +1,4 @@
 export default definePageConfig({
-  navigationBarTitleText: '统计',
+  navigationBarTitleText: '图表',
+  backgroundColor: '#1a1a1a',
 })

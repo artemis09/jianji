@@ -56,7 +56,7 @@ export default function DonutChart({ total, label, segments }: DonutChartProps) 
           startAngle += sweepAngle
         })
       })
-  }, [segments])
+  }, [segments, total, label, hasData])
 
   return (
     <View className='donut-chart'>

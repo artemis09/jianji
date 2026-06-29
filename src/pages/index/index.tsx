@@ -1,29 +1,30 @@
 import { View, Text, Button } from '@tarojs/components'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import Taro, { useReady, useDidShow } from '@tarojs/taro'
+import { useDataRefresh } from '@/hooks/useDataRefresh'
 import ProfileEntry from '@/components/ProfileEntry'
 import MonthSwitcher from '@/components/MonthSwitcher'
 import AddSheet from '@/components/AddSheet'
 import SummaryCard from '@/components/SummaryCard'
 import RecordList from '@/components/RecordList'
-import AppTabBar from '@/components/AppTabBar'
-import { useTabBarPage } from '@/hooks/useTabBarPage'
+import TabPageShell from '@/components/TabPageShell'
+import { useTheme } from '@/contexts/ThemeContext'
 import { useThemePageClass } from '@/hooks/useThemePageClass'
+import { useThemeBackground } from '@/hooks/useThemeBackground'
 import { getBudget } from '@/services/budget'
 import { getRecords, deleteRecord } from '@/services/records'
 import { getCategories } from '@/services/categories'
 import { calcMonthSummary } from '@/utils/stats'
 import { storage } from '@/services/storage'
-import { triggerSync } from '@/services/sync'
 import './index.scss'
 
 export default function Index() {
-  const pageClass = useThemePageClass('page page-index')
-  useTabBarPage()
+  const themeClass = useThemePageClass('page')
+  const { theme } = useTheme()
+  useThemeBackground()
   const hasPhone = !!storage.getUser()?.phone
   const [records, setRecords] = useState(() => getRecords())
   const [categories, setCategories] = useState(() => getCategories())
-  const [pageReady, setPageReady] = useState(false)
   const [addVisible, setAddVisible] = useState(false)
   const [month, setMonth] = useState(() => new Date().toISOString().slice(0, 7))
 
@@ -34,24 +35,20 @@ export default function Index() {
   const summary = calcMonthSummary(records, month)
   const currentBudget = getBudget(month)
 
-  const refresh = () => {
+  const refresh = useCallback(() => {
     setRecords(getRecords())
     setCategories(getCategories())
-  }
+  }, [])
+
+  useDataRefresh(refresh)
 
   useReady(() => {
-    setPageReady(true)
     Taro.eventCenter.on('openAddSheet', () => {
       setAddVisible(true)
     })
     Taro.eventCenter.on('setIndexMonth', (m: string) => {
       if (m) setMonth(m)
     })
-    if (!storage.getUser()?.phone) return
-    refresh()
-    setTimeout(() => {
-      void triggerSync()
-    }, 3000)
   })
 
   useDidShow(() => {
@@ -77,7 +74,7 @@ export default function Index() {
 
   if (!hasPhone) {
     return (
-      <View className={`${pageClass} auth-gate`}>
+      <View className={`${themeClass} auth-gate`} style={{ backgroundColor: theme.pageBg }}>
         <Text className='auth-gate__title'>简记</Text>
         <Text className='auth-gate__desc'>绑定手机号后即可开始记账，数据将安全保存在云端</Text>
         <Button
@@ -90,12 +87,20 @@ export default function Index() {
     )
   }
 
-  if (!pageReady) {
-    return <View className={pageClass} />
-  }
-
   return (
-    <View className={pageClass}>
+    <TabPageShell
+      activeTab='index'
+      pageClass='page-index'
+      hideTabBar={addVisible}
+      overlay={
+        <AddSheet
+          visible={addVisible}
+          categories={categories}
+          onClose={() => setAddVisible(false)}
+          onSaved={refresh}
+        />
+      }
+    >
       <ProfileEntry />
       <MonthSwitcher month={month} onChange={setMonth} />
       <SummaryCard
@@ -110,8 +115,6 @@ export default function Index() {
         onDelete={handleDelete}
         onEdit={handleEdit}
       />
-      <AddSheet visible={addVisible} onClose={() => setAddVisible(false)} onSaved={refresh} />
-      {!addVisible && <AppTabBar activeTab='index' />}
-    </View>
+    </TabPageShell>
   )
 }

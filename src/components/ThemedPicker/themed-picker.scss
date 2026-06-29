@@ -1,0 +1,49 @@
+.themed-picker__trigger {
+  /* 保持与内部触发元素相同的 flex 布局 */
+}
+
+.themed-picker {
+  padding: 0 var(--space-page) calc(var(--space-section) + env(safe-area-inset-bottom));
+  background: var(--page-bg);
+}
+
+.themed-picker__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0 16px;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.themed-picker__title {
+  font-size: var(--text-body);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.themed-picker__action {
+  font-size: var(--text-body);
+  color: var(--text-secondary);
+  padding: 8px 4px;
+  min-width: 64px;
+}
+
+.themed-picker__action--confirm {
+  color: var(--primary);
+  font-weight: 600;
+  text-align: right;
+}
+
+.themed-picker__wheel {
+  height: 240px;
+  margin-top: 8px;
+}
+
+.themed-picker__item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  color: var(--text-primary);
+  font-size: var(--text-title);
+}

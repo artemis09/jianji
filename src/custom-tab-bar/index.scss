@@ -5,8 +5,8 @@
   bottom: 0;
   display: flex;
   align-items: flex-end;
-  justify-content: space-around;
-  padding: 8px var(--space-page) calc(12px + env(safe-area-inset-bottom));
+  justify-content: space-between;
+  padding: 8px 16px calc(8px + env(safe-area-inset-bottom));
   background: var(--surface);
   border-top: 1px solid var(--surface-border);
   z-index: 100;
@@ -57,21 +57,92 @@
   gap: 4px;
   padding-bottom: 2px;
 
-  &::before, &::after {
+  &::before,
+  &::after {
     content: '';
     width: 8px;
     background: var(--primary);
     border-radius: 2px;
   }
 
-  &::before { height: 14px; }
-  &::after { height: 24px; }
+  &::before {
+    height: 14px;
+  }
+
+  &::after {
+    height: 24px;
+  }
+}
+
+.custom-tab-bar__icon--bill {
+  position: relative;
+  width: 28px;
+  height: 34px;
+  margin-top: 0;
+  border: 3px solid var(--primary);
+  border-radius: 4px;
+  margin-left: auto;
+  margin-right: auto;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 4px;
+    right: 4px;
+    height: 3px;
+    background: var(--primary);
+    border-radius: 1px;
+    box-shadow: 0 7px 0 var(--primary), 0 14px 0 var(--primary);
+  }
+}
+
+.custom-tab-bar__icon--profile {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  margin-top: 2px;
+  border: 3px solid var(--primary);
+  border-radius: 50%;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    background: var(--primary);
+    border-radius: 50%;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 18px;
+    height: 10px;
+    background: var(--primary);
+    border-radius: 10px 10px 0 0;
+  }
+}
+
+.custom-tab-bar__fab-slot {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  min-height: 88px;
 }
 
 .custom-tab-bar__fab {
   width: var(--tab-fab-size);
   height: var(--tab-fab-size);
-  margin-bottom: 20px;
+  margin-top: -20px;
   border-radius: 50%;
   background: var(--btn-gradient);
   display: flex;
@@ -86,4 +157,10 @@
   font-size: 40px;
   font-weight: 700;
   line-height: 1;
+}
+
+.custom-tab-bar__fab-label {
+  margin-top: 6px;
+  font-size: var(--text-caption);
+  color: var(--text-secondary);
 }

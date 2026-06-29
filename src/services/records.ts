@@ -1,7 +1,8 @@
 import { genId } from '@/utils/id'
 import type { Record } from '@/types'
 import { storage } from './storage'
-import { enqueueSync, triggerSync } from './sync'
+import { enqueueSync, scheduleSync } from './sync'
+import { notifyDataChanged } from './data-events'
 
 export function addRecord(
   input: Omit<Record, '_id' | 'syncStatus' | 'createdAt' | 'updatedAt'>,
@@ -17,7 +18,8 @@ export function addRecord(
   const records = storage.getRecords()
   storage.setRecords([record, ...records])
   enqueueSync('records', 'create', record)
-  void triggerSync()
+  scheduleSync()
+  notifyDataChanged()
   return record
 }
 
@@ -35,7 +37,8 @@ export function deleteRecord(id: string): void {
   records[index] = updated
   storage.setRecords(records)
   enqueueSync('records', 'delete', updated)
-  void triggerSync()
+  scheduleSync()
+  notifyDataChanged()
 }
 
 export function updateRecord(
@@ -58,7 +61,8 @@ export function updateRecord(
   records[index] = updated
   storage.setRecords(records)
   enqueueSync('records', 'update', updated)
-  void triggerSync()
+  scheduleSync()
+  notifyDataChanged()
   return updated
 }
 

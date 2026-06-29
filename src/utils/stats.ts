@@ -62,3 +62,48 @@ export function calcCategoryBreakdown(
     }))
     .sort((a, b) => b.amount - a.amount)
 }
+
+const UNCLASSIFIED_ID = '__unclassified__'
+
+/** 按收支类型生成分类排行（仅含该类型分类，错绑记录归入「未分类」） */
+export function buildTypedCategoryRank(
+  records: StatsRecord[],
+  categories: Array<{ _id: string; type: RecordType; name: string }>,
+  month: string,
+  type: RecordType,
+): Array<CategoryBreakdownItem & { name: string }> {
+  const breakdown = calcCategoryBreakdown(records, month, type)
+  const typeCategories = categories.filter(c => c.type === type)
+  const typeIds = new Set(typeCategories.map(c => c._id))
+  const amountByCat = new Map(breakdown.map(b => [b.categoryId, b.amount]))
+
+  let unclassified = 0
+  for (const item of breakdown) {
+    if (!typeIds.has(item.categoryId)) {
+      unclassified += item.amount
+    }
+  }
+
+  const rows: Array<{ categoryId: string; amount: number }> = []
+  for (const cat of typeCategories) {
+    const amount = amountByCat.get(cat._id) ?? 0
+    if (amount > 0) rows.push({ categoryId: cat._id, amount })
+  }
+  if (unclassified > 0) {
+    rows.push({ categoryId: UNCLASSIFIED_ID, amount: unclassified })
+  }
+
+  const total = rows.reduce((sum, row) => sum + row.amount, 0)
+  const nameMap = new Map(typeCategories.map(c => [c._id, c.name]))
+
+  return rows
+    .map(row => ({
+      categoryId: row.categoryId,
+      name: row.categoryId === UNCLASSIFIED_ID
+        ? '未分类'
+        : (nameMap.get(row.categoryId) || '未分类'),
+      amount: row.amount,
+      percent: total === 0 ? 0 : Math.round((row.amount / total) * 10000) / 100,
+    }))
+    .sort((a, b) => b.amount - a.amount)
+}

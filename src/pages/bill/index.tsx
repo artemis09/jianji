@@ -1,6 +1,8 @@
-import { View, Text, Picker } from '@tarojs/components'
-import { useMemo, useState } from 'react'
+import { View, Text } from '@tarojs/components'
+import { useMemo, useState, useCallback } from 'react'
 import Taro, { useDidShow } from '@tarojs/taro'
+import { useDataRefresh } from '@/hooks/useDataRefresh'
+import ThemedSelectorPicker from '@/components/ThemedPicker/ThemedSelectorPicker'
 import TabPageShell from '@/components/TabPageShell'
 import { getRecords } from '@/services/records'
 import { triggerSync, getPendingSyncCount } from '@/services/sync'
@@ -41,8 +43,14 @@ export default function BillPage() {
   const [records, setRecords] = useState(() => getRecords())
   const [year, setYear] = useState(() => String(new Date().getFullYear()))
 
-  useDidShow(() => {
+  const refresh = useCallback(() => {
     setRecords(getRecords())
+  }, [])
+
+  useDataRefresh(refresh)
+
+  useDidShow(() => {
+    refresh()
     if (getPendingSyncCount() > 0) triggerSync()
   })
 
@@ -71,17 +79,18 @@ export default function BillPage() {
   return (
     <TabPageShell activeTab='bill' pageClass={pageClass}>
       <View className='page-bill__header'>
-        <Picker
-          mode='selector'
-          range={years}
-          value={Math.max(years.indexOf(year), 0)}
-          onChange={e => setYear(years[Number(e.detail.value)])}
+        <ThemedSelectorPicker
+          title='选择年份'
+          options={years}
+          value={year}
+          onChange={setYear}
+          formatOption={y => `${y}年`}
         >
           <View className='page-bill__year-picker pressable'>
             <Text>{year}年</Text>
             <Text className='page-bill__year-arrow'>▼</Text>
           </View>
-        </Picker>
+        </ThemedSelectorPicker>
         <Text className='page-bill__brand'>简记</Text>
         <View className='page-bill__header-spacer' />
       </View>

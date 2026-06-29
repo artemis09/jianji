@@ -6,4 +6,6 @@ export const KEYS = {
   USER: 'user',
   LAST_SYNC_AT: 'lastSyncAt',
   BUDGET: 'budget',
+  CATEGORIES_PRESET_VERSION: 'categoriesPresetVersion',
+  PRIVACY_AGREED_AT: 'privacyAgreedAt',
 } as const

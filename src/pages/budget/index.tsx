@@ -1,7 +1,8 @@
-import { View, Text, Input, Picker, Button } from '@tarojs/components'
+import { View, Text, Input, Button } from '@tarojs/components'
 import { useState } from 'react'
 import Taro from '@tarojs/taro'
 import PageHeader from '@/components/PageHeader'
+import ThemedMonthPicker from '@/components/ThemedPicker/ThemedMonthPicker'
 import { useThemePageClass } from '@/hooks/useThemePageClass'
 import { useAuth } from '@/contexts/AuthContext'
 import { getBudget, setBudget, removeBudget } from '@/services/budget'
@@ -17,10 +18,11 @@ export default function BudgetPage() {
   const existing = getBudget(month)
   const [amount, setAmount] = useState(String(existing?.amount || ''))
 
-  const monthOptions = Array.from({ length: 12 }, (_, i) => {
-    const d = new Date(now.getFullYear(), i, 1)
-    return d.toISOString().slice(0, 7)
-  })
+  const handleMonthChange = (m: string) => {
+    setMonth(m)
+    const b = getBudget(m)
+    setAmount(String(b?.amount || ''))
+  }
 
   const handleSave = () => {
     const val = parseFloat(amount)
@@ -43,22 +45,12 @@ export default function BudgetPage() {
     <View className={pageClass}>
       <PageHeader title='预算设置' left='back' />
       <View className='page__body'>
-        <Picker
-          mode='selector'
-          range={monthOptions}
-          value={monthOptions.indexOf(month)}
-          onChange={e => {
-            const m = monthOptions[Number(e.detail.value)]
-            setMonth(m)
-            const b = getBudget(m)
-            setAmount(String(b?.amount || ''))
-          }}
-        >
+        <ThemedMonthPicker value={month} onChange={handleMonthChange}>
           <View className='list-row pressable'>
             <Text>选择月份</Text>
             <Text>{month.replace('-', '年')}月</Text>
           </View>
-        </Picker>
+        </ThemedMonthPicker>
 
         <View className='budget-form'>
           <Text className='budget-form__label'>月度预算金额（元）</Text>

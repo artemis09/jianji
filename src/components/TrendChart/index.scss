@@ -6,17 +6,37 @@
   border: 1px solid var(--surface-border);
 }
 
+.trend-chart__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 64px;
+}
+
 .trend-chart__title {
-  display: block;
   font-size: var(--text-list);
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 12px;
+}
+
+.trend-chart__arrow {
+  font-size: var(--text-caption);
+  color: var(--text-secondary);
+  transition: transform 0.2s ease;
+}
+
+.trend-chart__arrow--open {
+  transform: rotate(180deg);
+}
+
+.trend-chart--collapsed {
+  padding-bottom: 20px;
 }
 
 .trend-chart__legend {
   display: flex;
   gap: 24px;
+  margin-top: 12px;
   margin-bottom: 12px;
 }
 
@@ -44,13 +64,9 @@
   margin: 0 auto;
 }
 
-.trend-chart__empty {
-  margin: 0 var(--space-page) var(--space-section);
-  padding: 48px;
+.trend-chart__empty-body {
+  padding: 32px 16px 16px;
   text-align: center;
-  background: var(--surface);
-  border-radius: var(--radius-card);
-  border: 1px dashed var(--surface-border);
 }
 
 .trend-chart__empty-text {

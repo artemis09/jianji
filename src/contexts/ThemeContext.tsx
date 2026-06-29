@@ -2,6 +2,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useLayoutEffect,
   useMemo,
   useState,
   type PropsWithChildren,
@@ -9,6 +10,7 @@ import {
 import type { ThemeId, ThemeTokens } from '@/types'
 import { storage } from '@/services/storage'
 import { THEMES } from '@/themes/tokens'
+import { applyPageBackground } from '@/utils/theme-background'
 
 interface ThemeContextValue {
   themeId: ThemeId
@@ -39,6 +41,10 @@ export function ThemeProvider({ children }: PropsWithChildren) {
     }),
     [themeId, setTheme],
   )
+
+  useLayoutEffect(() => {
+    applyPageBackground(THEMES[themeId].pageBg)
+  }, [themeId])
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
 }

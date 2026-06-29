@@ -27,3 +27,8 @@ export function removeBudget(month: string): void {
   const filtered = all.filter(b => b.month !== month)
   Taro.setStorageSync(KEYS.BUDGET, filtered)
 }
+
+export function clearBudgetsForUser(userId: string): void {
+  const all: Budget[] = Taro.getStorageSync(KEYS.BUDGET) || []
+  Taro.setStorageSync(KEYS.BUDGET, all.filter(b => b.userId !== userId))
+}

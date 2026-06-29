@@ -1,13 +1,14 @@
 page {
-  background: var(--page-bg);
+  background-color: #1a1a1a;
   color: var(--text-primary);
   font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+  height: 100%;
 }
 
 .theme-root {
   min-height: 100vh;
 
-  /* 750 设计稿字号体系（与登录页一致） */
+  /* 750 设计稿字号体系 */
   --text-caption: 24px;
   --text-secondary-size: 26px;
   --text-body: 28px;
@@ -26,8 +27,21 @@ page {
   --radius-card: 24px;
   --radius-item: 16px;
   --icon-md: 48px;
-  --tab-fab-size: 56px;
-  --tab-bar-offset: 160px;
+  --tab-fab-size: 104px;
+  --tab-bar-offset: 180px;
+  --tab-bar-height: 180px;
+  --icon-circle-bg: rgba(255, 255, 255, 0.08);
+
+  /* 底栏默认 */
+  --tab-bar-bg: var(--page-bg);
+  --tab-bar-border: var(--surface-border);
+  --tab-icon-stroke: var(--text-secondary);
+  --tab-active-fill: rgba(128, 128, 128, 0.15);
+  --tab-label: var(--text-secondary);
+  --tab-label-active: var(--primary);
+  --tab-fab-ring: var(--page-bg);
+  --tab-fab-text: var(--btn-text);
+  --btn-text: #1a1a1a;
 }
 
 /* 触控反馈 — ui-ux-pro-max: min 44px touch targets + press state */
@@ -37,70 +51,104 @@ page {
   transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
-.theme-root--warm {
-  --page-bg: #1c1917;
-  --surface: #292524;
-  --surface-border: #3d3835;
-  --text-primary: #fafaf9;
-  --text-secondary: #a8a29e;
-  --primary: #ffb800;
-  --primary-gradient: linear-gradient(135deg, #ffd100, #ffb800, #ff9500);
-  --btn-gradient: linear-gradient(135deg, #ffd100, #ff9500);
-  --expense: #fb923c;
-  --income: #4ade80;
-  --glow: 0 0 24px rgba(255, 184, 0, 0.2);
+/* ── 鲨鱼记账 · 深灰 + 鲨鱼黄 ── */
+.theme-root--shark {
+  --page-bg: #1a1a1a;
+  --surface: #2c2c2e;
+  --surface-border: #3a3a3c;
+  --text-primary: #ffffff;
+  --text-secondary: #8e8e93;
+  --primary: #ffbe0a;
+  --primary-gradient: linear-gradient(135deg, #ffd60a, #ffbe0a, #ff9500);
+  --btn-gradient: linear-gradient(135deg, #ffd60a, #ff9500);
+  --btn-text: #1a1a1a;
+  --expense: #ff6b4a;
+  --income: #34c759;
+  --glow: 0 4px 28px rgba(255, 190, 10, 0.28);
+  --icon-circle-bg: rgba(255, 190, 10, 0.1);
+  --tab-bar-bg: #1a1a1a;
+  --tab-bar-border: #2c2c2e;
+  --tab-active-fill: rgba(255, 190, 10, 0.18);
 }
 
-.theme-root--mint {
-  --page-bg: #ecfdf5;
-  --surface: #059669;
-  --surface-border: #047857;
-  --text-primary: #064e3b;
-  --text-secondary: #6ee7b7;
-  --primary: #10b981;
-  --primary-gradient: linear-gradient(135deg, #34d399, #10b981, #059669);
-  --btn-gradient: linear-gradient(135deg, #34d399, #059669);
-  --expense: #059669;
-  --income: #4ade80;
+/* ── 小青账 · 薄荷清新 ── */
+.theme-root--qing {
+  --page-bg: #f5faf8;
+  --surface: #ffffff;
+  --surface-border: #dceede;
+  --text-primary: #1a3d32;
+  --text-secondary: #6b9b8a;
+  --primary: #00c9a7;
+  --primary-gradient: linear-gradient(135deg, #5eead4, #00c9a7, #00a896);
+  --btn-gradient: linear-gradient(135deg, #34d399, #00a896);
+  --btn-text: #ffffff;
+  --expense: #ff6b6b;
+  --income: #00c9a7;
+  --glow: 0 4px 20px rgba(0, 201, 167, 0.2);
+  --icon-circle-bg: rgba(0, 201, 167, 0.1);
+  --tab-bar-bg: #ffffff;
+  --tab-bar-border: #dceede;
+  --tab-active-fill: rgba(0, 201, 167, 0.14);
 }
 
-.theme-root--dark {
-  --page-bg: #0a0a0a;
-  --surface: #141414;
-  --surface-border: #262626;
-  --text-primary: #f5f5f5;
-  --text-secondary: #737373;
-  --primary: #d4af37;
-  --primary-gradient: linear-gradient(135deg, #f5e6a3, #d4af37, #b8960c);
-  --btn-gradient: linear-gradient(135deg, #f5e6a3, #b8960c);
-  --expense: #f87171;
-  --income: #a3e635;
+/* ── 随手记 · 白净橙蓝 ── */
+.theme-root--suishou {
+  --page-bg: #f7f8fa;
+  --surface: #ffffff;
+  --surface-border: #e8eaed;
+  --text-primary: #1d2129;
+  --text-secondary: #86909c;
+  --primary: #ff6633;
+  --primary-gradient: linear-gradient(135deg, #ff8a5c, #ff6633, #e85a2c);
+  --btn-gradient: linear-gradient(135deg, #ff8a5c, #e85a2c);
+  --btn-text: #ffffff;
+  --expense: #ff6633;
+  --income: #1677ff;
+  --glow: 0 4px 20px rgba(255, 102, 51, 0.18);
+  --icon-circle-bg: rgba(255, 102, 51, 0.08);
+  --tab-bar-bg: #ffffff;
+  --tab-bar-border: #e8eaed;
+  --tab-active-fill: rgba(255, 102, 51, 0.12);
 }
 
-.theme-root--candy {
-  --page-bg: #ffffff;
-  --surface: #fdf2f8;
-  --surface-border: #fbcfe8;
-  --text-primary: #1f2937;
-  --text-secondary: #6b7280;
-  --primary: #f472b6;
-  --primary-gradient: linear-gradient(135deg, #f472b6, #ec4899, #db2777);
-  --btn-gradient: linear-gradient(135deg, #f472b6, #db2777);
-  --expense: #db2777;
-  --income: #2563eb;
+/* ── 喵喵记账 · 粉紫萌系 ── */
+.theme-root--miao {
+  --page-bg: #fff5f8;
+  --surface: #ffffff;
+  --surface-border: #ffe0eb;
+  --text-primary: #4a2040;
+  --text-secondary: #b080a0;
+  --primary: #ff85b3;
+  --primary-gradient: linear-gradient(135deg, #ffb3d9, #ff85b3, #c77dff);
+  --btn-gradient: linear-gradient(135deg, #ff9ec5, #c77dff);
+  --btn-text: #ffffff;
+  --expense: #ff6b9d;
+  --income: #7b9eff;
+  --glow: 0 4px 24px rgba(255, 133, 179, 0.25);
+  --icon-circle-bg: rgba(255, 133, 179, 0.12);
+  --tab-bar-bg: #ffffff;
+  --tab-bar-border: #ffe0eb;
+  --tab-active-fill: rgba(255, 133, 179, 0.16);
 }
 
-.theme-root--caramel {
-  --page-bg: #fef7ed;
-  --surface: linear-gradient(145deg, #c2410c, #9a3412);
-  --surface-border: #fdba74;
-  --text-primary: #44403c;
-  --text-secondary: #78716c;
-  --primary: #c2410c;
-  --primary-gradient: linear-gradient(145deg, #ea580c, #c2410c, #9a3412);
-  --btn-gradient: linear-gradient(135deg, #ea580c, #9a3412);
-  --expense: #c2410c;
-  --income: #84cc16;
+/* ── 午夜沉浸 · OLED 纯黑 ── */
+.theme-root--midnight {
+  --page-bg: #000000;
+  --surface: #1c1c1e;
+  --surface-border: #2c2c2e;
+  --text-primary: #f5f5f7;
+  --text-secondary: #636366;
+  --primary: #ffd60a;
+  --primary-gradient: linear-gradient(135deg, #ffe566, #ffd60a, #ffaa00);
+  --btn-gradient: linear-gradient(135deg, #ffe566, #ffaa00);
+  --btn-text: #1a1a1a;
+  --expense: #ff453a;
+  --income: #30d158;
+  --glow: 0 4px 28px rgba(255, 214, 10, 0.22);
+  --icon-circle-bg: rgba(255, 214, 10, 0.1);
+  --tab-bar-bg: #000000;
+  --tab-bar-border: #1c1c1e;
+  --tab-active-fill: rgba(255, 214, 10, 0.16);
 }
 
 .auth-gate {
@@ -133,7 +181,7 @@ page {
   line-height: 88px;
   border-radius: 44px;
   background: var(--btn-gradient);
-  color: #1c1917;
+  color: var(--btn-text);
   font-size: 30px;
   font-weight: 600;
   border: none;
@@ -143,14 +191,9 @@ page {
   }
 }
 
-.theme-root--dark .auth-gate__btn,
-.theme-root--mint .auth-gate__btn,
-.theme-root--candy .auth-gate__btn {
-  color: #fff;
-}
-
 /* ── 统一页面布局 ── */
 .page {
+  position: relative;
   min-height: 100vh;
   background: var(--page-bg);
   color: var(--text-primary);
@@ -177,6 +220,18 @@ page {
   background: var(--surface);
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-card);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.theme-root--shark .surface-card,
+.theme-root--midnight .surface-card {
+  box-shadow: none;
+}
+
+.theme-root--qing .surface-card,
+.theme-root--suishou .surface-card,
+.theme-root--miao .surface-card {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
 }
 
 .list-row {
@@ -219,6 +274,7 @@ page {
   border-radius: var(--radius-item);
   padding: 16px 12px;
   text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 
 .chip__label {
@@ -278,7 +334,7 @@ page {
 
 .btn-primary {
   background: var(--btn-gradient) !important;
-  color: #1c1917 !important;
+  color: var(--btn-text) !important;
   border: none;
   border-radius: var(--radius-item);
   font-weight: 600;
@@ -290,12 +346,6 @@ page {
   &::after {
     border: none;
   }
-}
-
-.theme-root--dark .btn-primary,
-.theme-root--mint .btn-primary,
-.theme-root--candy .btn-primary {
-  color: #fff !important;
 }
 
 /* Page transition animations */

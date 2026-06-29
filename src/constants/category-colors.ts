@@ -1,18 +1,31 @@
-/** 分类色块 — 参考鲨鱼/随手记多彩分类识别 */
+/** 分类色块 — 明细列表左侧色条 */
 const EXPENSE_COLORS: Record<string, string> = {
   餐饮: '#FF9500',
   交通: '#3B82F6',
   购物: '#EC4899',
-  居住: '#8B5CF6',
+  服饰: '#F472B6',
   娱乐: '#F59E0B',
   医疗: '#10B981',
+  居住: '#8B5CF6',
+  住房: '#8B5CF6',
+  通讯: '#0EA5E9',
+  汽车: '#6366F1',
+  人情: '#EF4444',
+  育儿: '#F97316',
+  学习: '#22C55E',
+  宠物: '#A855F7',
+  美容: '#FB7185',
+  旅游: '#14B8A6',
   其他: '#78716C',
 }
 
 const INCOME_COLORS: Record<string, string> = {
   工资: '#22C55E',
   兼职: '#06B6D4',
+  理财: '#8B5CF6',
+  礼金: '#EC4899',
   其他: '#84CC16',
+  其它: '#84CC16',
 }
 
 export function getCategoryColor(name: string, type: 'expense' | 'income'): string {

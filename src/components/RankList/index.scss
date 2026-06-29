@@ -1,5 +1,5 @@
 .rank-list {
-  padding: 0 var(--space-page) var(--tab-bar-offset);
+  padding: 0 var(--space-page) var(--space-section);
 }
 
 .rank-list__row {
@@ -71,7 +71,7 @@
 }
 
 .rank-list__empty-wrap {
-  padding: 48px var(--space-page) var(--tab-bar-offset);
+  padding: 48px var(--space-page) var(--space-section);
 }
 
 .rank-list__empty {

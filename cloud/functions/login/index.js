@@ -12,7 +12,7 @@ exports.main = async () => {
     await users.add({
       data: {
         openid: OPENID,
-        theme: 'warm',
+        theme: 'shark',
         createdAt: db.serverDate(),
       },
     })

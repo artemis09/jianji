@@ -1,0 +1,30 @@
+.tab-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tab-icon--tab {
+  width: 48px;
+  height: 48px;
+}
+
+.tab-icon--fab {
+  width: 56px;
+  height: 56px;
+}
+
+.tab-icon__glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.tab-icon__glyph--active {
+  background: var(--tab-active-fill);
+}

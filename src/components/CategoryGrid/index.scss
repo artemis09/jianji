@@ -1,37 +1,35 @@
 .category-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  padding: var(--space-section) var(--space-page);
+  gap: 28px 8px;
+  padding: 8px var(--space-page) var(--space-section);
 }
 
 .category-grid__item {
-  padding: 12px 8px 16px;
-  border-radius: var(--radius-item);
   text-align: center;
-  background: var(--surface);
-  border: 2px solid var(--surface-border);
-  min-height: 120px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  padding: 4px 0;
 }
 
 .category-grid__icon-wrap {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 10px;
+  background: transparent;
+  border: none;
+  width: auto;
+  height: auto;
+  padding: 0;
 }
 
-.category-grid__icon {
-  font-size: 32px;
-  line-height: 1;
-  font-weight: 600;
+.category-grid__item--active .category-grid__icon-wrap {
+  border: none;
+  box-shadow: none;
+  background: transparent;
 }
 
 .category-grid__name {
@@ -42,38 +40,59 @@
 }
 
 .category-grid__item--active .category-grid__name {
+  color: var(--text-primary);
   font-weight: 600;
-  font-size: var(--text-secondary-size);
 }
 
 .category-grid__icon-wrap--manage {
-  background: var(--page-bg);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
   border: 2px dashed var(--surface-border);
+  background: transparent;
 }
 
-.category-grid__item--manage .category-grid__icon {
+.category-grid__item--manage .category-grid__name {
   color: var(--text-secondary);
-  font-size: 36px;
-  font-weight: 300;
 }
 
 .category-grid__item--dragging {
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  pointer-events: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+
+  .category-grid__icon-wrap {
+    border-color: var(--primary);
+  }
 }
 
 .category-grid__drag-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--btn-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #1c1917;
+  font-weight: 700;
+  z-index: 1;
+}
+
+.category-grid__del {
   position: absolute;
   top: -6px;
   right: -6px;
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--btn-gradient);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  color: #1c1917;
+  background: var(--expense);
+  color: #fff;
+  font-size: 22px;
+  line-height: 32px;
+  text-align: center;
   font-weight: 700;
+  z-index: 2;
 }

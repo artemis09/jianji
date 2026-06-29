@@ -1,7 +1,8 @@
 import { View, Text } from '@tarojs/components'
 import { useState, useRef, useCallback, useEffect } from 'react'
 import Taro from '@tarojs/taro'
-import { getCategoryColor } from '@/constants/category-colors'
+import CategoryIcon from '@/components/CategoryIcon'
+import { resolveCategoryIconKey } from '@/constants/category-icons'
 import './index.scss'
 
 interface CategoryItem {
@@ -10,6 +11,7 @@ interface CategoryItem {
   icon: string
   type: 'expense' | 'income'
   sort?: number
+  isDefault?: boolean
 }
 
 interface CategoryGridProps {
@@ -17,12 +19,25 @@ interface CategoryGridProps {
   selectedId?: string
   onSelect: (id: string) => void
   onReorder?: (orderedIds: string[]) => void
+  showManage?: boolean
+  manageMode?: boolean
+  onAdd?: () => void
+  onDelete?: (id: string) => void
 }
 
 const GRID_COLS = 4
 const LONG_PRESS_MS = 500
 
-export default function CategoryGrid({ categories, selectedId, onSelect, onReorder }: CategoryGridProps) {
+export default function CategoryGrid({
+  categories,
+  selectedId,
+  onSelect,
+  onReorder,
+  showManage = true,
+  manageMode = false,
+  onAdd,
+  onDelete,
+}: CategoryGridProps) {
   const [ordered, setOrdered] = useState<CategoryItem[]>(() => categories)
   const [dragIndex, setDragIndex] = useState<number | null>(null)
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null)
@@ -30,7 +45,6 @@ export default function CategoryGrid({ categories, selectedId, onSelect, onReord
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const gridRef = useRef<{ left: number; top: number; itemW: number; itemH: number; gap: number } | null>(null)
 
-  // Sync from props when not dragging
   useEffect(() => {
     if (dragIndex === null) {
       setOrdered(categories)
@@ -79,10 +93,8 @@ export default function CategoryGrid({ categories, selectedId, onSelect, onReord
     const colW = itemW + gridRef.current.gap
     const rowH = itemH + gridRef.current.gap
 
-    // Calculate drag position (centered on finger)
     setDragPos({ x: touch.pageX - itemW / 2, y: touch.pageY - itemH / 2 })
 
-    // Calculate which slot the finger is over
     const relativeX = touch.pageX - left
     const relativeY = touch.pageY - top
     const col = Math.max(0, Math.min(GRID_COLS - 1, Math.floor(relativeX / colW)))
@@ -91,7 +103,6 @@ export default function CategoryGrid({ categories, selectedId, onSelect, onReord
 
     if (targetIndex >= 0 && targetIndex < ordered.length && targetIndex !== dragOverIndex) {
       setDragOverIndex(targetIndex)
-      // Reorder items
       const newOrder = [...ordered]
       const [moved] = newOrder.splice(dragIndex, 1)
       newOrder.splice(targetIndex, 0, moved)
@@ -115,56 +126,96 @@ export default function CategoryGrid({ categories, selectedId, onSelect, onReord
     gridRef.current = null
   }
 
+  const confirmDelete = useCallback((cat: CategoryItem) => {
+    if (!onDelete) return
+    Taro.showModal({
+      title: '删除分类',
+      content: `确定删除「${cat.name}」吗？`,
+      success: res => {
+        if (res.confirm) onDelete(cat._id)
+      },
+    })
+  }, [onDelete])
+
+  const handleItemClick = (cat: CategoryItem) => {
+    if (dragIndex !== null) return
+    if (manageMode && !cat.isDefault && onDelete) {
+      confirmDelete(cat)
+      return
+    }
+    if (manageMode && cat.isDefault) {
+      Taro.showToast({ title: '预设分类不可删', icon: 'none' })
+      return
+    }
+    onSelect(cat._id)
+  }
+
+  const reorderEnabled = !!onReorder
+
   return (
     <View
       className='category-grid'
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-      catchMove
+      {...(reorderEnabled
+        ? { onTouchMove: handleTouchMove, onTouchEnd: handleTouchEnd, catchMove: true }
+        : {})}
     >
       {ordered.map((cat, i) => {
-        const color = getCategoryColor(cat.name, cat.type)
+        const iconKey = resolveCategoryIconKey(cat.name, cat.icon)
         const active = selectedId === cat._id
         const isDragging = dragIndex === i
 
         return (
           <View
             key={cat._id}
-            className={`category-grid__item ${active ? 'category-grid__item--active' : ''} ${isDragging ? 'category-grid__item--dragging' : ''}`}
+            className={`category-grid__item pressable ${active ? 'category-grid__item--active' : ''} ${isDragging ? 'category-grid__item--dragging' : ''}`}
             style={isDragging ? {
               left: `${dragPos.x}px`,
               top: `${dragPos.y}px`,
-              borderColor: color,
-              backgroundColor: `${color}14`,
-              opacity: 0.8,
+              opacity: 0.85,
               zIndex: 10,
               transform: 'scale(1.05)',
               position: 'fixed',
-            } : active ? { borderColor: color, backgroundColor: `${color}14` } : undefined}
-            onClick={() => {
-              if (!isDragging) onSelect(cat._id)
-            }}
-            onTouchStart={(e) => handleTouchStart(i, e)}
-            onTouchEnd={handleTouchEnd}
-            onLongPress={() => {}}
+            } : undefined}
+            onClick={() => handleItemClick(cat)}
+            {...(reorderEnabled
+              ? {
+                  onTouchStart: (e: any) => handleTouchStart(i, e),
+                  onTouchEnd: handleTouchEnd,
+                  onLongPress: () => {},
+                }
+              : {})}
           >
-            <View className='category-grid__icon-wrap' style={{ backgroundColor: `${color}22` }}>
+            <View className='category-grid__icon-wrap'>
               {isDragging && <View className='category-grid__drag-badge'>↕</View>}
-              <Text className='category-grid__icon' style={{ color }}>{cat.icon || cat.name.slice(0, 1)}</Text>
+              {manageMode && !cat.isDefault && onDelete && (
+                <View
+                  className='category-grid__del pressable'
+                  catchTap={() => confirmDelete(cat)}
+                >
+                  ×
+                </View>
+              )}
+              <CategoryIcon iconKey={iconKey} active={active} />
             </View>
-            <Text className='category-grid__name' style={active ? { color } : undefined}>{cat.name}</Text>
+            <Text className='category-grid__name'>{cat.name}</Text>
           </View>
         )
       })}
-      {onReorder && (
+      {showManage && (
         <View
-          className='category-grid__item category-grid__item--manage'
-          onClick={() => Taro.navigateTo({ url: '/pages/categories/index' })}
+          className='category-grid__item category-grid__item--manage pressable'
+          onClick={() => {
+            if (onAdd) {
+              onAdd()
+              return
+            }
+            Taro.navigateTo({ url: '/pages/categories/index' })
+          }}
         >
           <View className='category-grid__icon-wrap category-grid__icon-wrap--manage'>
-            <Text className='category-grid__icon'>+</Text>
+            <CategoryIcon iconKey='manage' tinted={false} />
           </View>
-          <Text className='category-grid__name'>管理</Text>
+          <Text className='category-grid__name'>{manageMode ? '添加' : '设置'}</Text>
         </View>
       )}
     </View>

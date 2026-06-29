@@ -1,0 +1,66 @@
+/* 底栏 — flex 贴屏底（由 TabPageShell 布局，勿用 position:fixed） */
+.app-tab-bar {
+  flex-shrink: 0;
+  width: 100%;
+  z-index: 500;
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--tab-bar-bg);
+  border-top: 1px solid var(--tab-bar-border);
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.08);
+}
+
+.app-tab-bar__inner {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 16px 12px 10px;
+  min-height: var(--tab-bar-height);
+  box-sizing: border-box;
+}
+
+.app-tab-bar__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0 2px;
+}
+
+.app-tab-bar__label {
+  font-size: 22px;
+  color: var(--tab-label);
+  line-height: 1.2;
+}
+
+.app-tab-bar__item--active .app-tab-bar__label {
+  color: var(--tab-label-active);
+  font-weight: 600;
+}
+
+.app-tab-bar__fab-slot {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.app-tab-bar__fab {
+  width: var(--tab-fab-size);
+  height: var(--tab-fab-size);
+  margin-top: calc(var(--tab-fab-size) / -2 + 8px);
+  border-radius: 50%;
+  background: var(--btn-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 6px solid var(--tab-fab-ring);
+  box-shadow: var(--glow, 0 4px 20px rgba(0, 0, 0, 0.15));
+}
+
+.app-tab-bar__fab-label {
+  margin-top: 10px;
+  font-size: 22px;
+  color: var(--tab-label);
+}

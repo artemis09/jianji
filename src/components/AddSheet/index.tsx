@@ -1,55 +1,56 @@
-import { View, Text, Picker, Textarea } from '@tarojs/components'
-import { useState, useMemo, useEffect } from 'react'
+import { View, Text, ScrollView } from '@tarojs/components'
+import ThemedDatePicker from '@/components/ThemedDatePicker'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import Taro from '@tarojs/taro'
+import RecordTypeTabs from '@/components/RecordTypeTabs'
 import CategoryGrid from '@/components/CategoryGrid'
+import AddFormNote from '@/components/AddFormNote'
 import NumPad from '@/components/NumPad'
 import IceSheet from '@/components/IceSheet'
 import { useAuth } from '@/contexts/AuthContext'
 import { addRecord } from '@/services/records'
-import { getCategories } from '@/services/categories'
+import { getSortedCategories } from '@/services/categories'
 import { currentDateStr } from '@/utils/date'
 import { formatAmount } from '@/utils/amount'
-import type { RecordType } from '@/types'
+import type { RecordType, Category } from '@/types'
 import './index.scss'
 
 interface AddSheetProps {
   visible: boolean
+  categories: Category[]
   onClose: () => void
   onSaved: () => void
 }
 
-export default function AddSheet({ visible, onClose, onSaved }: AddSheetProps) {
+export default function AddSheet({ visible, categories, onClose, onSaved }: AddSheetProps) {
   const { user } = useAuth()
   const [type, setType] = useState<RecordType>('expense')
   const [amountStr, setAmountStr] = useState('0')
   const [categoryId, setCategoryId] = useState('')
   const [date, setDate] = useState(currentDateStr())
   const [note, setNote] = useState('')
-  const [noteExpanded, setNoteExpanded] = useState(false)
-  const [categories, setCategories] = useState(() => getCategories())
 
   const filteredCategories = useMemo(
-    () => categories.filter(c => c.type === type && c.userId === (user?.openid || '')),
+    () => getSortedCategories(user?.openid || '', type, categories),
     [categories, type, user?.openid],
   )
 
   const amount = parseFloat(amountStr) || 0
   const canSubmit = amount > 0 && categoryId
 
-  // Reset state when opening
+  const wasVisible = useRef(false)
+
   useEffect(() => {
-    if (visible) {
+    if (visible && !wasVisible.current) {
       setType('expense')
       setAmountStr('0')
       setDate(currentDateStr())
       setNote('')
-      setNoteExpanded(false)
-      const cats = getCategories()
-      setCategories(cats)
-      const expenseCats = cats.filter(c => c.type === 'expense' && c.userId === user?.openid)
+      const expenseCats = getSortedCategories(user?.openid || '', 'expense', categories)
       setCategoryId(expenseCats[0]?._id || '')
     }
-  }, [visible, user?.openid])
+    wasVisible.current = visible
+  }, [visible, user?.openid, categories])
 
   const handleKey = (key: string) => {
     if (key === 'del') {
@@ -69,7 +70,7 @@ export default function AddSheet({ visible, onClose, onSaved }: AddSheetProps) {
 
   const onTypeChange = (next: RecordType) => {
     setType(next)
-    const cats = getCategories().filter(c => c.type === next && c.userId === user?.openid)
+    const cats = getSortedCategories(user?.openid || '', next, categories)
     setCategoryId(cats[0]?._id || '')
   }
 
@@ -96,67 +97,48 @@ export default function AddSheet({ visible, onClose, onSaved }: AddSheetProps) {
 
   return (
     <IceSheet visible={visible} onClose={onClose}>
-      <View className='add-sheet'>
-        <View className='add-sheet__toggle'>
-          <Text
-            className={`add-sheet__tab ${type === 'expense' ? 'add-sheet__tab--active add-sheet__tab--expense' : ''}`}
-            onClick={() => onTypeChange('expense')}
-          >
-            支出
-          </Text>
-          <Text
-            className={`add-sheet__tab ${type === 'income' ? 'add-sheet__tab--active add-sheet__tab--income' : ''}`}
-            onClick={() => onTypeChange('income')}
-          >
-            收入
-          </Text>
-        </View>
-
-        <View className='add-sheet__amount-wrap'>
-          <Text className='add-sheet__currency'>¥</Text>
-          <Text className='add-sheet__amount'>{formatAmount(amount)}</Text>
-        </View>
-
-        <Text className='add-sheet__hint'>选择分类</Text>
-
-        <CategoryGrid
-          categories={filteredCategories}
-          selectedId={categoryId}
-          onSelect={setCategoryId}
+      <View className='add-sheet add-form'>
+        <RecordTypeTabs
+          value={type}
+          onChange={onTypeChange}
+          onCancel={onClose}
         />
 
-        {/* 备注 — 展开式 */}
-        <View className='add-sheet__note'>
-          {noteExpanded || note ? (
-            <Textarea
-              className='add-sheet__note-input'
-              placeholder='记录一下…'
-              value={note}
-              onInput={e => setNote(e.detail.value)}
-              autoFocus
+        <View className='add-form__categories-wrap'>
+          <ScrollView scrollY className='add-form__categories' enhanced showScrollbar>
+            <CategoryGrid
+              categories={filteredCategories}
+              selectedId={categoryId}
+              onSelect={setCategoryId}
+              showManage={false}
             />
-          ) : (
-            <View className='add-sheet__note-placeholder pressable' onClick={() => setNoteExpanded(true)}>
-              <Text className='add-sheet__note-icon'>📝</Text>
-              <Text>添加备注…</Text>
-            </View>
-          )}
+          </ScrollView>
+          <View className='add-form__categories-fade' />
         </View>
 
-        <NumPad onInput={handleKey} />
+        <View className='add-form__panel'>
+          <View className='add-form__amount-wrap'>
+            <Text className='add-form__currency'>¥</Text>
+            <Text className='add-form__amount'>{formatAmount(amount)}</Text>
+          </View>
 
-        <View className='add-sheet__footer'>
-          <Picker mode='date' value={date} onChange={e => setDate(e.detail.value)}>
-            <View className='add-sheet__date'>
-              <Text className='add-sheet__date-label'>日期</Text>
-              <Text className='add-sheet__date-value'>{date.replace(/-/g, '.')}</Text>
+          <AddFormNote value={note} onChange={setNote} />
+
+          <NumPad onInput={handleKey} />
+
+          <View className='add-form__footer'>
+            <ThemedDatePicker value={date} onChange={setDate}>
+              <View className='add-form__date pressable'>
+                <Text className='add-form__date-label'>日期</Text>
+                <Text className='add-form__date-value'>{date.replace(/-/g, '.')}</Text>
+              </View>
+            </ThemedDatePicker>
+            <View
+              className={`add-form__done pressable ${canSubmit ? '' : 'add-form__done--disabled'}`}
+              onClick={handleSubmit}
+            >
+              <Text>完成</Text>
             </View>
-          </Picker>
-          <View
-            className={`add-sheet__done ${canSubmit ? '' : 'add-sheet__done--disabled'}`}
-            onClick={handleSubmit}
-          >
-            <Text>完成</Text>
           </View>
         </View>
       </View>

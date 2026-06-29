@@ -3,6 +3,7 @@ import { useTheme } from '@/contexts/ThemeContext'
 import type { Record, Category } from '@/types'
 import { groupRecordsByDate, formatDateLabel } from '@/utils/date'
 import { formatAmount } from '@/utils/amount'
+import { THEME_META } from '@/themes/meta'
 import RecordItem from '@/components/RecordItem'
 import './index.scss'
 
@@ -25,6 +26,7 @@ function dayTotal(items: Record[]): { expense: number; income: number } {
 
 export default function RecordList({ records, categories, onDelete, onEdit }: RecordListProps) {
   const { themeId } = useTheme()
+  const showTimeline = THEME_META[themeId].timeline
   const groups = groupRecordsByDate(records)
   const catMap = new Map(categories.map(c => [c._id, c]))
 
@@ -35,8 +37,8 @@ export default function RecordList({ records, categories, onDelete, onEdit }: Re
         const { expense, income } = dayTotal(group.items)
         return (
           <View key={group.date} className='record-list__group'>
-            <View className={`record-list__header ${themeId === 'warm' ? 'record-list__header--timeline' : ''}`}>
-              {themeId === 'warm' && <View className='record-list__timeline' />}
+            <View className={`record-list__header ${showTimeline ? 'record-list__header--timeline' : ''}`}>
+              {showTimeline && <View className='record-list__timeline' />}
               <View className='record-list__header-main'>
                 <Text className='record-list__date'>{formatDateLabel(group.date)}</Text>
                 <Text className='record-list__day-total'>

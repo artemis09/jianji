@@ -3,6 +3,7 @@
   overflow: hidden;
   margin-bottom: 12px;
   border-radius: var(--radius-item);
+  background: #ef4444;
 }
 
 .record-item {
@@ -16,6 +17,8 @@
   border-radius: var(--radius-item);
   transition: transform 0.2s ease-out;
   z-index: 1;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .record-item__color-bar {
@@ -31,17 +34,11 @@
   width: var(--icon-md);
   height: var(--icon-md);
   border-radius: 50%;
-  border: 1px solid;
+  background: var(--icon-circle-bg);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-}
-
-.record-item__icon-text {
-  font-size: 26px;
-  line-height: 1;
-  font-weight: 600;
 }
 
 .record-item__body {

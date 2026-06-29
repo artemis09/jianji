@@ -1,0 +1,135 @@
+.page-bill__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--page-header-top) var(--space-page) var(--space-section);
+}
+
+.page-bill__year-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 140px;
+  min-height: 64px;
+  font-size: var(--text-body);
+  color: var(--text-primary);
+}
+
+.page-bill__year-arrow {
+  font-size: var(--text-caption);
+  color: var(--text-secondary);
+}
+
+.page-bill__brand {
+  font-size: var(--text-heading);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 4px;
+}
+
+.page-bill__header-spacer {
+  min-width: 140px;
+}
+
+.page-bill__year-card {
+  position: relative;
+  margin: 0 var(--space-page) var(--space-section);
+  padding: 36px 32px 28px;
+  border-radius: var(--radius-card);
+  background: var(--btn-gradient);
+  overflow: hidden;
+  color: var(--btn-text);
+}
+
+.page-bill__watermark {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 160px;
+  font-weight: 800;
+  line-height: 1;
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.page-bill__balance-label {
+  display: block;
+  font-size: var(--text-body);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.page-bill__balance {
+  display: block;
+  font-size: var(--text-balance-lg);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -1px;
+  margin-bottom: 20px;
+}
+
+.page-bill__year-row {
+  display: flex;
+  gap: 32px;
+}
+
+.page-bill__year-stat {
+  font-size: var(--text-list);
+  font-weight: 700;
+}
+
+.page-bill__table {
+  margin: 0 var(--space-page);
+  background: var(--surface);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--surface-border);
+  overflow: hidden;
+}
+
+.page-bill__table-head,
+.page-bill__table-row {
+  display: flex;
+  align-items: center;
+  padding: 20px 16px;
+}
+
+.page-bill__table-head {
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.page-bill__table-head .page-bill__col {
+  font-size: var(--text-caption);
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.page-bill__table-row {
+  border-bottom: 1px solid var(--surface-border);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.page-bill__col {
+  flex: 1;
+  text-align: right;
+  font-size: var(--text-body);
+}
+
+.page-bill__col--month {
+  flex: 0.8;
+  text-align: left;
+}
+
+.page-bill__month-label {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.page-bill__amount {
+  color: var(--text-primary);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}

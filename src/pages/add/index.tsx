@@ -1,13 +1,15 @@
-import { View, Text, Picker } from '@tarojs/components'
-import { useState, useMemo } from 'react'
-import Taro, { useLoad, useRouter } from '@tarojs/taro'
-import PageHeader from '@/components/PageHeader'
-import SegToggle from '@/components/SegToggle'
+import { View, Text, ScrollView } from '@tarojs/components'
+import ThemedDatePicker from '@/components/ThemedDatePicker'
+import { useState, useMemo, useCallback } from 'react'
+import Taro, { useLoad, useRouter, useDidShow } from '@tarojs/taro'
+import { useDataRefresh } from '@/hooks/useDataRefresh'
+import RecordTypeTabs from '@/components/RecordTypeTabs'
 import CategoryGrid from '@/components/CategoryGrid'
+import AddFormNote from '@/components/AddFormNote'
 import NumPad from '@/components/NumPad'
 import { useThemePageClass } from '@/hooks/useThemePageClass'
 import { addRecord, getRecords, updateRecord } from '@/services/records'
-import { getCategories } from '@/services/categories'
+import { getCategories, getSortedCategories } from '@/services/categories'
 import { useAuth } from '@/contexts/AuthContext'
 import { currentDateStr } from '@/utils/date'
 import { formatAmount } from '@/utils/amount'
@@ -24,11 +26,17 @@ export default function AddPage() {
   const [amountStr, setAmountStr] = useState('0')
   const [categoryId, setCategoryId] = useState('')
   const [date, setDate] = useState(currentDateStr())
+  const [note, setNote] = useState('')
   const [categories, setCategories] = useState(() => getCategories())
 
+  const refreshCategories = useCallback(() => setCategories(getCategories()), [])
+
+  useDataRefresh(refreshCategories)
+  useDidShow(refreshCategories)
+
   useLoad(() => {
-    const cats = getCategories().filter(c => c.type === type)
-    setCategories(getCategories())
+    const cats = getCategories()
+    setCategories(cats)
     if (editId) {
       const record = getRecords().find(r => r._id === editId)
       if (record) {
@@ -36,14 +44,16 @@ export default function AddPage() {
         setAmountStr(String(record.amount))
         setCategoryId(record.categoryId)
         setDate(record.date)
+        setNote(record.note || '')
       }
-    } else if (cats[0]) {
-      setCategoryId(cats[0]._id)
+    } else {
+      const sorted = getSortedCategories(user?.openid || '', type, cats)
+      if (sorted[0]) setCategoryId(sorted[0]._id)
     }
   })
 
   const filteredCategories = useMemo(
-    () => categories.filter(c => c.type === type && c.userId === (user?.openid || '')),
+    () => getSortedCategories(user?.openid || '', type, categories),
     [categories, type, user?.openid],
   )
 
@@ -74,7 +84,7 @@ export default function AddPage() {
       type,
       amount,
       categoryId,
-      note: '',
+      note,
       date,
     }
     if (editId) {
@@ -94,46 +104,57 @@ export default function AddPage() {
 
   const onTypeChange = (next: RecordType) => {
     setType(next)
-    const cats = getCategories().filter(c => c.type === next && c.userId === user?.openid)
+    const cats = getSortedCategories(user?.openid || '', next, categories)
     setCategoryId(cats[0]?._id || '')
   }
 
   return (
-    <View className={pageClass}>
-      <PageHeader
-        title={editId ? '编辑账单' : '记一笔'}
-        left='cancel'
-      />
-
-      <SegToggle value={type} onChange={onTypeChange} />
-
-      <View className='page-add__amount-wrap'>
-        <Text className='page-add__currency'>¥</Text>
-        <Text className='page-add__amount'>{formatAmount(amount)}</Text>
+    <View className={`${pageClass} add-form`}>
+      <View className='page-add__brand-bar'>
+        <Text className='page-add__brand'>简记</Text>
       </View>
 
-      <Text className='section-title'>选择分类</Text>
-
-      <CategoryGrid
-        categories={filteredCategories}
-        selectedId={categoryId}
-        onSelect={setCategoryId}
+      <RecordTypeTabs
+        value={type}
+        onChange={onTypeChange}
+        onCancel={() => Taro.navigateBack()}
       />
 
-      <NumPad onInput={handleKey} />
+      <View className='add-form__categories-wrap'>
+        <ScrollView scrollY className='add-form__categories' enhanced showScrollbar>
+          <CategoryGrid
+            categories={filteredCategories}
+            selectedId={categoryId}
+            onSelect={setCategoryId}
+            showManage
+          />
+        </ScrollView>
+        <View className='add-form__categories-fade' />
+      </View>
 
-      <View className='page-add__footer'>
-        <Picker mode='date' value={date} onChange={e => setDate(e.detail.value)}>
-          <View className='page-add__date pressable'>
-            <Text className='page-add__date-label'>日期</Text>
-            <Text className='page-add__date-value'>{date.replace(/-/g, '.')}</Text>
+      <View className='add-form__panel'>
+        <View className='add-form__amount-wrap'>
+          <Text className='add-form__currency'>¥</Text>
+          <Text className='add-form__amount'>{formatAmount(amount)}</Text>
+        </View>
+
+        <AddFormNote value={note} onChange={setNote} />
+
+        <NumPad onInput={handleKey} />
+
+        <View className='add-form__footer'>
+          <ThemedDatePicker value={date} onChange={setDate}>
+            <View className='add-form__date pressable'>
+              <Text className='add-form__date-label'>日期</Text>
+              <Text className='add-form__date-value'>{date.replace(/-/g, '.')}</Text>
+            </View>
+          </ThemedDatePicker>
+          <View
+            className={`add-form__done pressable ${canSubmit ? '' : 'add-form__done--disabled'}`}
+            onClick={handleSubmit}
+          >
+            <Text>完成</Text>
           </View>
-        </Picker>
-        <View
-          className={`page-add__done pressable ${canSubmit ? '' : 'page-add__done--disabled'}`}
-          onClick={handleSubmit}
-        >
-          <Text>完成</Text>
         </View>
       </View>
     </View>

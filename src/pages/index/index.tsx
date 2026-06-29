@@ -3,6 +3,7 @@ import { useState, useMemo } from 'react'
 import Taro, { useReady } from '@tarojs/taro'
 import ProfileEntry from '@/components/ProfileEntry'
 import MonthSwitcher from '@/components/MonthSwitcher'
+import AddSheet from '@/components/AddSheet'
 import SummaryCard from '@/components/SummaryCard'
 import RecordList from '@/components/RecordList'
 import { useThemePageClass } from '@/hooks/useThemePageClass'
@@ -19,6 +20,7 @@ export default function Index() {
   const [records, setRecords] = useState(() => getRecords())
   const [categories, setCategories] = useState(() => getCategories())
   const [pageReady, setPageReady] = useState(false)
+  const [addVisible, setAddVisible] = useState(false)
   const [month, setMonth] = useState(() => new Date().toISOString().slice(0, 7))
 
   const monthRecords = useMemo(
@@ -34,6 +36,9 @@ export default function Index() {
 
   useReady(() => {
     setPageReady(true)
+    Taro.eventCenter.on('openAddSheet', () => {
+      setAddVisible(true)
+    })
     if (!storage.getUser()?.phone) return
     refresh()
     setTimeout(() => {
@@ -92,6 +97,7 @@ export default function Index() {
         onDelete={handleDelete}
         onEdit={handleEdit}
       />
+      <AddSheet visible={addVisible} onClose={() => setAddVisible(false)} onSaved={refresh} />
     </View>
   )
 }

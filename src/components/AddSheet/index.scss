@@ -1,0 +1,121 @@
+.add-sheet {
+  padding-bottom: env(safe-area-inset-bottom);
+  display: flex;
+  flex-direction: column;
+}
+
+.add-sheet__toggle {
+  display: flex;
+  margin: 12px var(--space-page) 0;
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 6px;
+  border: 1px solid var(--surface-border);
+}
+
+.add-sheet__tab {
+  flex: 1;
+  text-align: center;
+  padding: 18px;
+  font-size: var(--text-list);
+  color: var(--text-secondary);
+  border-radius: 999px;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &--active {
+    font-weight: 700;
+  }
+
+  &--expense {
+    background: rgba(251, 146, 60, 0.15);
+    color: var(--expense);
+  }
+
+  &--income {
+    background: rgba(74, 222, 128, 0.15);
+    color: var(--income);
+  }
+}
+
+.add-sheet__amount-wrap {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+  margin: 28px var(--space-page) 8px;
+}
+
+.add-sheet__currency {
+  font-size: var(--text-title);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.add-sheet__amount {
+  font-size: var(--text-amount-lg);
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.1;
+  letter-spacing: -1px;
+}
+
+.add-sheet__hint {
+  display: block;
+  padding: 0 var(--space-page);
+  font-size: var(--text-caption);
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.add-sheet__footer {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-item);
+  padding: var(--space-section) var(--space-page) 32px;
+}
+
+.add-sheet__date {
+  padding: 20px 24px;
+  background: var(--surface);
+  border-radius: var(--radius-item);
+  border: 1px solid var(--surface-border);
+  min-width: 160px;
+  min-height: 88px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.add-sheet__date-label {
+  font-size: var(--text-caption);
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.add-sheet__date-value {
+  font-size: var(--text-body);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.add-sheet__done {
+  flex: 1;
+  text-align: center;
+  padding: 20px;
+  border-radius: var(--radius-item);
+  background: var(--btn-gradient);
+  color: #1c1917;
+  font-weight: 700;
+  font-size: var(--text-title);
+  min-height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-sheet__done--disabled {
+  opacity: 0.4;
+}

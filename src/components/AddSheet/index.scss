@@ -70,45 +70,40 @@
   margin-bottom: 4px;
 }
 
-.add-sheet__note-wrap {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 0 var(--space-page);
-  margin-top: 8px;
-  margin-bottom: 4px;
+.add-sheet__note {
+  margin: 8px var(--space-page);
 }
 
-.add-sheet__note-label {
-  font-size: var(--text-caption);
-  color: var(--text-secondary);
-  flex-shrink: 0;
-}
-
-.add-sheet__note-input-wrap {
-  flex: 1;
+.add-sheet__note-placeholder {
   display: flex;
   align-items: center;
+  gap: 8px;
+  padding: 16px;
   background: var(--surface);
-  border: 1px solid var(--surface-border);
+  border: 1px dashed var(--surface-border);
   border-radius: var(--radius-item);
-  padding: 4px 16px;
-  min-height: 64px;
+  color: var(--text-secondary);
+  font-size: var(--text-body);
+  min-height: 52px;
+}
+
+.add-sheet__note-icon {
+  font-size: 20px;
+  line-height: 1;
 }
 
 .add-sheet__note-input {
-  flex: 1;
-  font-size: var(--text-body);
+  display: block;
+  width: 100%;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-item);
   color: var(--text-primary);
-  height: 56px;
-  line-height: 56px;
-}
-
-.add-sheet__note-clear {
   font-size: var(--text-body);
-  color: var(--text-secondary);
-  padding: 8px;
-  flex-shrink: 0;
+  min-height: 88px;
+  box-sizing: border-box;
+  line-height: 1.5;
 }
 
 .add-sheet__footer {

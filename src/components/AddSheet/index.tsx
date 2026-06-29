@@ -1,4 +1,4 @@
-import { View, Text, Picker, Input } from '@tarojs/components'
+import { View, Text, Picker, Input, Textarea } from '@tarojs/components'
 import { useState, useMemo, useEffect } from 'react'
 import Taro from '@tarojs/taro'
 import CategoryGrid from '@/components/CategoryGrid'
@@ -25,6 +25,7 @@ export default function AddSheet({ visible, onClose, onSaved }: AddSheetProps) {
   const [categoryId, setCategoryId] = useState('')
   const [date, setDate] = useState(currentDateStr())
   const [note, setNote] = useState('')
+  const [noteExpanded, setNoteExpanded] = useState(false)
   const [categories, setCategories] = useState(() => getCategories())
 
   const filteredCategories = useMemo(
@@ -42,6 +43,7 @@ export default function AddSheet({ visible, onClose, onSaved }: AddSheetProps) {
       setAmountStr('0')
       setDate(currentDateStr())
       setNote('')
+      setNoteExpanded(false)
       const cats = getCategories()
       setCategories(cats)
       const expenseCats = cats.filter(c => c.type === 'expense' && c.userId === user?.openid)
@@ -123,20 +125,22 @@ export default function AddSheet({ visible, onClose, onSaved }: AddSheetProps) {
           onSelect={setCategoryId}
         />
 
-        <View className='add-sheet__note-wrap'>
-          <Text className='add-sheet__note-label'>备注</Text>
-          <View className='add-sheet__note-input-wrap'>
-            <Input
+        {/* 备注 — 展开式 */}
+        <View className='add-sheet__note'>
+          {noteExpanded || note ? (
+            <Textarea
               className='add-sheet__note-input'
+              placeholder='记录一下…'
               value={note}
               onInput={e => setNote(e.detail.value)}
-              placeholder='添加备注...'
-              maxlength={30}
+              autoFocus
             />
-            {note.length > 0 && (
-              <Text className='add-sheet__note-clear' onClick={() => setNote('')}>x</Text>
-            )}
-          </View>
+          ) : (
+            <View className='add-sheet__note-placeholder pressable' onClick={() => setNoteExpanded(true)}>
+              <Text className='add-sheet__note-icon'>📝</Text>
+              <Text>添加备注…</Text>
+            </View>
+          )}
         </View>
 
         <NumPad onInput={handleKey} />

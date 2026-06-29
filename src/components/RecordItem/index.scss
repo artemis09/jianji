@@ -2,11 +2,12 @@
   display: flex;
   align-items: center;
   gap: var(--space-item);
-  padding: 20px;
+  padding: 18px 18px 18px 16px;
   background: var(--surface);
   border: 1px solid var(--surface-border);
-  border-radius: var(--radius-item);
-  margin-bottom: 12px;
+  border-left: 3px solid var(--surface-border);
+  border-radius: 14px;
+  margin-bottom: 10px;
 }
 
 .record-item__icon {
@@ -39,16 +40,11 @@
   line-height: 1.35;
 }
 
-.record-item__meta {
-  margin-top: 8px;
-}
-
-.record-item__badge {
-  display: inline-block;
+.record-item__meta-text {
+  display: block;
   font-size: var(--text-caption);
-  padding: 4px 12px;
-  border-radius: 999px;
-  font-weight: 500;
+  color: var(--text-secondary);
+  margin-top: 4px;
 }
 
 .record-item__amount {

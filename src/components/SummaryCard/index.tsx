@@ -24,13 +24,19 @@ export default function SummaryCard({ income, expense, balance }: SummaryCardPro
           </Text>
         </View>
         <View className='summary-card__row'>
-          <View className='summary-card__col'>
-            <Text className='summary-card__meta'>收入</Text>
-            <Text className='summary-card__value summary-card__income'>¥{formatAmount(income)}</Text>
+          <View className='summary-card__col summary-card__col--income'>
+            <View className='summary-card__col-bar summary-card__col-bar--income' />
+            <View className='summary-card__col-body'>
+              <Text className='summary-card__meta'>收入</Text>
+              <Text className='summary-card__value summary-card__income'>¥{formatAmount(income)}</Text>
+            </View>
           </View>
-          <View className='summary-card__col'>
-            <Text className='summary-card__meta'>支出</Text>
-            <Text className='summary-card__value summary-card__expense'>¥{formatAmount(expense)}</Text>
+          <View className='summary-card__col summary-card__col--expense'>
+            <View className='summary-card__col-bar summary-card__col-bar--expense' />
+            <View className='summary-card__col-body'>
+              <Text className='summary-card__meta'>支出</Text>
+              <Text className='summary-card__value summary-card__expense'>¥{formatAmount(expense)}</Text>
+            </View>
           </View>
         </View>
       </View>

@@ -25,7 +25,7 @@
   display: flex;
   align-items: baseline;
   gap: 8px;
-  margin: 12px 0 24px;
+  margin: 12px 0 32px;
 }
 
 .summary-card__currency {
@@ -35,7 +35,7 @@
 }
 
 .summary-card__balance {
-  font-size: var(--text-balance);
+  font-size: var(--text-balance-lg);
   font-weight: 800;
   line-height: 1.1;
   color: var(--text-primary);
@@ -50,17 +50,36 @@
 
 .summary-card__row {
   display: flex;
-  padding-top: 20px;
-  border-top: 1px solid var(--surface-border);
+  gap: 16px;
 }
 
 .summary-card__col {
   flex: 1;
-  text-align: center;
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  background: var(--page-bg);
+  border-radius: calc(var(--radius-item) - 2px);
+  padding: 16px;
+}
 
-  &:not(:last-child) {
-    border-right: 1px solid var(--surface-border);
-  }
+.summary-card__col-bar {
+  width: 4px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.summary-card__col-bar--income {
+  background: var(--income);
+}
+
+.summary-card__col-bar--expense {
+  background: var(--expense);
+}
+
+.summary-card__col-body {
+  display: flex;
+  flex-direction: column;
 }
 
 .summary-card__meta {

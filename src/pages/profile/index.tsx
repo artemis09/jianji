@@ -8,6 +8,7 @@ import './index.scss'
 
 const MENU = [
   { title: '外观主题', url: '/pages/theme/index' },
+  { title: '预算设置', url: '/pages/budget/index' },
   { title: '分类管理', url: '/pages/categories/index' },
   { title: '关于', action: 'about' as const },
 ]

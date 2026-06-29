@@ -1,6 +1,7 @@
 import { View, Text, Picker } from '@tarojs/components'
 import { useState, useMemo } from 'react'
 import { useDidShow } from '@tarojs/taro'
+import Taro from '@tarojs/taro'
 import PageHeader from '@/components/PageHeader'
 import SegToggle from '@/components/SegToggle'
 import DonutChart from '@/components/DonutChart'
@@ -11,6 +12,7 @@ import { getRecords } from '@/services/records'
 import { getCategories } from '@/services/categories'
 import { calcMonthSummary, calcCategoryBreakdown } from '@/utils/stats'
 import { formatAmount } from '@/utils/amount'
+import { getBudget } from '@/services/budget'
 import type { RecordType } from '@/types'
 import './index.scss'
 
@@ -55,6 +57,7 @@ export default function StatsPage() {
   )
 
   const chartTotal = statType === 'expense' ? summary.expense : summary.income
+  const currentBudget = getBudget(month)
 
   const trendData = useMemo(() => {
     const months: string[] = []
@@ -113,9 +116,16 @@ export default function StatsPage() {
             )
           })()}
         </View>
-        <View className='chip'>
-          <Text className='chip__label'>结余</Text>
-          <Text className='chip__value'>¥{formatAmount(summary.balance)}</Text>
+        <View className='chip' onClick={() => Taro.navigateTo({ url: '/pages/budget/index' })}>
+          <Text className='chip__label'>预算</Text>
+          {currentBudget ? (
+            <>
+              <Text className='chip__value'>¥{formatAmount(currentBudget.amount)}</Text>
+              <Text className='chip__label'>剩余 ¥{formatAmount(Math.max(currentBudget.amount - summary.expense, 0))}</Text>
+            </>
+          ) : (
+            <Text className='chip__value'>未设置</Text>
+          )}
         </View>
       </View>
 

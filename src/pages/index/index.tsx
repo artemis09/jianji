@@ -1,6 +1,6 @@
 import { View, Text, Button } from '@tarojs/components'
 import { useState, useMemo } from 'react'
-import Taro, { useReady } from '@tarojs/taro'
+import Taro, { useReady, usePullDownRefresh, useReachBottom } from '@tarojs/taro'
 import ProfileEntry from '@/components/ProfileEntry'
 import MonthSwitcher from '@/components/MonthSwitcher'
 import AddSheet from '@/components/AddSheet'
@@ -44,6 +44,22 @@ export default function Index() {
     setTimeout(() => {
       void triggerSync()
     }, 3000)
+  })
+
+  usePullDownRefresh(async () => {
+    try {
+      await triggerSync()
+      refresh()
+      Taro.showToast({ title: '已刷新', icon: 'success', duration: 1000 })
+    } catch {
+      Taro.showToast({ title: '刷新失败', icon: 'none' })
+    } finally {
+      Taro.stopPullDownRefresh()
+    }
+  })
+
+  useReachBottom(() => {
+    Taro.showToast({ title: '已加载全部账单', icon: 'none', duration: 1000 })
   })
 
   const handleDelete = (id: string) => {

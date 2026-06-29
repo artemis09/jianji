@@ -4,9 +4,10 @@ import './index.scss'
 
 interface TabBarProps {
   activeTab: 'index' | 'stats'
+  onAddClick?: () => void
 }
 
-export default function TabBar({ activeTab }: TabBarProps) {
+export default function TabBar({ activeTab, onAddClick }: TabBarProps) {
   const go = (url: string) => {
     Taro.redirectTo({ url })
   }
@@ -22,7 +23,7 @@ export default function TabBar({ activeTab }: TabBarProps) {
       </View>
       <View
         className='tab-bar__fab pressable'
-        onClick={() => Taro.navigateTo({ url: '/pages/add/index' })}
+        onClick={() => (onAddClick ? onAddClick() : Taro.navigateTo({ url: '/pages/add/index' }))}
       >
         <Text className='tab-bar__fab-icon'>+</Text>
       </View>

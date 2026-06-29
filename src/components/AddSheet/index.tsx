@@ -1,4 +1,4 @@
-import { View, Text, Picker } from '@tarojs/components'
+import { View, Text, Picker, Input } from '@tarojs/components'
 import { useState, useMemo, useEffect } from 'react'
 import Taro from '@tarojs/taro'
 import CategoryGrid from '@/components/CategoryGrid'
@@ -24,6 +24,7 @@ export default function AddSheet({ visible, onClose, onSaved }: AddSheetProps) {
   const [amountStr, setAmountStr] = useState('0')
   const [categoryId, setCategoryId] = useState('')
   const [date, setDate] = useState(currentDateStr())
+  const [note, setNote] = useState('')
   const [categories, setCategories] = useState(() => getCategories())
 
   const filteredCategories = useMemo(
@@ -40,6 +41,7 @@ export default function AddSheet({ visible, onClose, onSaved }: AddSheetProps) {
       setType('expense')
       setAmountStr('0')
       setDate(currentDateStr())
+      setNote('')
       const cats = getCategories()
       setCategories(cats)
       const expenseCats = cats.filter(c => c.type === 'expense' && c.userId === user?.openid)
@@ -77,7 +79,7 @@ export default function AddSheet({ visible, onClose, onSaved }: AddSheetProps) {
       type,
       amount,
       categoryId,
-      note: '',
+      note,
       date,
     })
     Taro.showToast({ title: '记账成功', icon: 'success' })
@@ -120,6 +122,22 @@ export default function AddSheet({ visible, onClose, onSaved }: AddSheetProps) {
           selectedId={categoryId}
           onSelect={setCategoryId}
         />
+
+        <View className='add-sheet__note-wrap'>
+          <Text className='add-sheet__note-label'>备注</Text>
+          <View className='add-sheet__note-input-wrap'>
+            <Input
+              className='add-sheet__note-input'
+              value={note}
+              onInput={e => setNote(e.detail.value)}
+              placeholder='添加备注...'
+              maxlength={30}
+            />
+            {note.length > 0 && (
+              <Text className='add-sheet__note-clear' onClick={() => setNote('')}>x</Text>
+            )}
+          </View>
+        </View>
 
         <NumPad onInput={handleKey} />
 

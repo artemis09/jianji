@@ -7,11 +7,16 @@ interface SummaryCardProps {
   income: number
   expense: number
   balance: number
+  budget?: { amount: number; expense: number }
 }
 
-export default function SummaryCard({ income, expense, balance }: SummaryCardProps) {
+export default function SummaryCard({ income, expense, balance, budget }: SummaryCardProps) {
   const { themeId } = useTheme()
   const isWarm = themeId === 'warm'
+
+  const budgetPct = budget ? Math.min((budget.expense / budget.amount) * 100, 100) : 0
+  const isOverBudget = budget && budget.expense > budget.amount
+  const overAmount = isOverBudget ? budget.expense - budget.amount : 0
 
   return (
     <View className={`summary-card ${isWarm ? 'summary-card--warm' : ''}`}>
@@ -23,6 +28,25 @@ export default function SummaryCard({ income, expense, balance }: SummaryCardPro
             {formatAmount(balance)}
           </Text>
         </View>
+        {budget && (
+          <View className='summary-card__budget'>
+            <View className='summary-card__budget-row'>
+              <Text className='summary-card__budget-label'>预算</Text>
+              <Text className='summary-card__budget-value'>
+                ¥{formatAmount(budget.expense)} / ¥{formatAmount(budget.amount)}
+              </Text>
+            </View>
+            <View className='summary-card__budget-bar'>
+              <View
+                className={`summary-card__budget-fill ${budgetPct >= 90 ? 'summary-card__budget-fill--danger' : ''}`}
+                style={{ width: `${budgetPct}%` }}
+              />
+            </View>
+            {isOverBudget && (
+              <Text className='summary-card__budget-over'>已超支 ¥{formatAmount(overAmount)}</Text>
+            )}
+          </View>
+        )}
         <View className='summary-card__row'>
           <View className='summary-card__col summary-card__col--income'>
             <View className='summary-card__col-bar summary-card__col-bar--income' />

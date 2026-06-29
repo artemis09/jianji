@@ -7,6 +7,7 @@ import AddSheet from '@/components/AddSheet'
 import SummaryCard from '@/components/SummaryCard'
 import RecordList from '@/components/RecordList'
 import { useThemePageClass } from '@/hooks/useThemePageClass'
+import { getBudget } from '@/services/budget'
 import { getRecords, deleteRecord } from '@/services/records'
 import { getCategories } from '@/services/categories'
 import { calcMonthSummary } from '@/utils/stats'
@@ -28,6 +29,7 @@ export default function Index() {
     [records, month],
   )
   const summary = calcMonthSummary(records, month)
+  const currentBudget = getBudget(month)
 
   const refresh = () => {
     setRecords(getRecords())
@@ -106,6 +108,7 @@ export default function Index() {
         income={summary.income}
         expense={summary.expense}
         balance={summary.balance}
+        budget={currentBudget ? { amount: currentBudget.amount, expense: summary.expense } : undefined}
       />
       <RecordList
         records={monthRecords}

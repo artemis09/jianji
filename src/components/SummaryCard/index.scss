@@ -102,3 +102,54 @@
 .summary-card__expense {
   color: var(--expense);
 }
+
+.summary-card__budget {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.summary-card__budget-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.summary-card__budget-label {
+  font-size: var(--text-caption);
+  color: var(--text-secondary);
+}
+
+.summary-card__budget-value {
+  font-size: var(--text-caption);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.summary-card__budget-bar {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--surface-border);
+  overflow: hidden;
+}
+
+.summary-card__budget-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: var(--primary);
+  transition: width 0.3s ease-out;
+}
+
+.summary-card__budget-fill--danger {
+  background: var(--expense);
+}
+
+.summary-card__budget-over {
+  display: block;
+  margin-top: 6px;
+  font-size: var(--text-caption);
+  color: var(--expense);
+  font-weight: 600;
+}

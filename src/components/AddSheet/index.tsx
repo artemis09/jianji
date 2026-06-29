@@ -1,4 +1,4 @@
-import { View, Text, Picker, Input, Textarea } from '@tarojs/components'
+import { View, Text, Picker, Textarea } from '@tarojs/components'
 import { useState, useMemo, useEffect } from 'react'
 import Taro from '@tarojs/taro'
 import CategoryGrid from '@/components/CategoryGrid'

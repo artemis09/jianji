@@ -5,7 +5,6 @@ import ProfileEntry from '@/components/ProfileEntry'
 import MonthSwitcher from '@/components/MonthSwitcher'
 import SummaryCard from '@/components/SummaryCard'
 import RecordList from '@/components/RecordList'
-import TabBar from '@/components/TabBar'
 import { useThemePageClass } from '@/hooks/useThemePageClass'
 import { getRecords, deleteRecord } from '@/services/records'
 import { getCategories } from '@/services/categories'
@@ -93,7 +92,6 @@ export default function Index() {
         onDelete={handleDelete}
         onEdit={handleEdit}
       />
-      <TabBar activeTab='index' />
     </View>
   )
 }

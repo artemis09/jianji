@@ -3,7 +3,6 @@ import { useState, useMemo } from 'react'
 import { useDidShow } from '@tarojs/taro'
 import PageHeader from '@/components/PageHeader'
 import SegToggle from '@/components/SegToggle'
-import TabBar from '@/components/TabBar'
 import DonutChart from '@/components/DonutChart'
 import RankList from '@/components/RankList'
 import { useThemePageClass } from '@/hooks/useThemePageClass'
@@ -88,7 +87,6 @@ export default function StatsPage() {
       <DonutChart total={chartTotal} label={statType === 'expense' ? '总支出' : '总收入'} />
       <Text className='section-title'>分类排行</Text>
       <RankList items={rankItems} />
-      <TabBar activeTab='stats' />
     </View>
   )
 }

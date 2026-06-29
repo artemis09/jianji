@@ -4,6 +4,7 @@ import { useDidShow } from '@tarojs/taro'
 import PageHeader from '@/components/PageHeader'
 import SegToggle from '@/components/SegToggle'
 import DonutChart from '@/components/DonutChart'
+import TrendChart from '@/components/TrendChart'
 import RankList from '@/components/RankList'
 import { useThemePageClass } from '@/hooks/useThemePageClass'
 import { getRecords } from '@/services/records'
@@ -49,6 +50,18 @@ export default function StatsPage() {
 
   const chartTotal = statType === 'expense' ? summary.expense : summary.income
 
+  const trendData = useMemo(() => {
+    const months: string[] = []
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
+      months.push(d.toISOString().slice(0, 7))
+    }
+    return months.map(m => {
+      const s = calcMonthSummary(records, m)
+      return { month: m, income: s.income, expense: s.expense }
+    })
+  }, [records, now])
+
   const monthPicker = (
     <Picker
       mode='selector'
@@ -81,6 +94,8 @@ export default function StatsPage() {
           <Text className='chip__value'>¥{formatAmount(summary.balance)}</Text>
         </View>
       </View>
+
+      <TrendChart data={trendData} />
 
       <SegToggle value={statType} onChange={setStatType} />
 

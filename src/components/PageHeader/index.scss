@@ -1,0 +1,28 @@
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--page-header-top) var(--space-page) var(--space-section);
+}
+
+.page-header__left {
+  min-width: 120px;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  font-size: var(--text-body);
+  color: var(--text-secondary);
+}
+
+.page-header__title {
+  font-size: var(--text-list);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.page-header__right {
+  min-width: 120px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}

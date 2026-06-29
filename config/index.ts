@@ -19,7 +19,8 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
     sourceRoot: 'src',
     outputRoot: 'dist',
     plugins: [
-      "@tarojs/plugin-generator"
+      "@tarojs/plugin-generator",
+      path.join(__dirname, 'plugins/fix-weapp-dist.ts'),
     ],
     defineConstants: {
     },

@@ -1,16 +1,46 @@
 {
-  "miniprogramRoot": "./dist",
+  "miniprogramRoot": "dist/",
   "cloudfunctionRoot": "cloud/functions/",
   "projectname": "jianji",
   "description": "简记微信小程序",
-  "appid": "touristappid",
+  "appid": "wxa81a5c44882338b4",
+  "packOptions": {
+    "ignore": [
+      {
+        "value": "cloud",
+        "type": "folder"
+      }
+    ],
+    "include": []
+  },
   "setting": {
     "urlCheck": true,
-    "es6": false,
-    "enhance": false,
+    "es6": true,
+    "enhance": true,
     "compileHotReLoad": false,
     "postcss": false,
-    "minified": false
+    "minified": false,
+    "minifyWXML": true,
+    "compileWorklet": false,
+    "uglifyFileName": false,
+    "uploadWithSourceMap": true,
+    "packNpmManually": false,
+    "packNpmRelationList": [],
+    "minifyWXSS": true,
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "useCompilerPlugins": false,
+    "condition": false,
+    "swc": false,
+    "disableSWC": true,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    }
   },
-  "compileType": "miniprogram"
+  "compileType": "miniprogram",
+  "simulatorPluginLibVersion": {},
+  "libVersion": "3.16.2",
+  "editorSetting": {}
 }

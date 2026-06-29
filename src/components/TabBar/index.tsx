@@ -14,22 +14,24 @@ export default function TabBar({ activeTab }: TabBarProps) {
   return (
     <View className='tab-bar'>
       <View
-        className={`tab-bar__item ${activeTab === 'index' ? 'tab-bar__item--active' : ''}`}
+        className={`tab-bar__item pressable ${activeTab === 'index' ? 'tab-bar__item--active' : ''}`}
         onClick={() => go('/pages/index/index')}
       >
-        <Text>明细</Text>
+        <View className='tab-bar__icon tab-bar__icon--list' />
+        <Text className='tab-bar__label'>明细</Text>
       </View>
       <View
-        className='tab-bar__fab'
+        className='tab-bar__fab pressable'
         onClick={() => Taro.navigateTo({ url: '/pages/add/index' })}
       >
         <Text className='tab-bar__fab-icon'>+</Text>
       </View>
       <View
-        className={`tab-bar__item ${activeTab === 'stats' ? 'tab-bar__item--active' : ''}`}
+        className={`tab-bar__item pressable ${activeTab === 'stats' ? 'tab-bar__item--active' : ''}`}
         onClick={() => go('/pages/stats/index')}
       >
-        <Text>统计</Text>
+        <View className='tab-bar__icon tab-bar__icon--chart' />
+        <Text className='tab-bar__label'>统计</Text>
       </View>
     </View>
   )

@@ -1,8 +1,11 @@
 import { View, Text, Picker } from '@tarojs/components'
 import { useState, useMemo } from 'react'
 import Taro, { useLoad, useRouter } from '@tarojs/taro'
+import PageHeader from '@/components/PageHeader'
+import SegToggle from '@/components/SegToggle'
 import CategoryGrid from '@/components/CategoryGrid'
 import NumPad from '@/components/NumPad'
+import { useThemePageClass } from '@/hooks/useThemePageClass'
 import { addRecord, getRecords, updateRecord } from '@/services/records'
 import { getCategories } from '@/services/categories'
 import { useAuth } from '@/contexts/AuthContext'
@@ -12,6 +15,7 @@ import type { RecordType } from '@/types'
 import './index.scss'
 
 export default function AddPage() {
+  const pageClass = useThemePageClass('page page-add')
   const router = useRouter()
   const { user } = useAuth()
   const editId = router.params.id
@@ -75,13 +79,17 @@ export default function AddPage() {
     }
     if (editId) {
       updateRecord(editId, payload)
+      Taro.showToast({ title: '已更新', icon: 'success' })
     } else {
       addRecord(payload)
+      Taro.showToast({ title: '记账成功', icon: 'success' })
     }
     if (network.networkType === 'none') {
-      Taro.showToast({ title: '已保存，待同步', icon: 'none' })
+      setTimeout(() => {
+        Taro.showToast({ title: '已保存，待同步', icon: 'none' })
+      }, 1500)
     }
-    Taro.navigateBack()
+    setTimeout(() => Taro.navigateBack(), 400)
   }
 
   const onTypeChange = (next: RecordType) => {
@@ -91,23 +99,20 @@ export default function AddPage() {
   }
 
   return (
-    <View className='page-add'>
-      <View className='page-add__toggle'>
-        <Text
-          className={`page-add__tab ${type === 'expense' ? 'page-add__tab--active' : ''}`}
-          onClick={() => onTypeChange('expense')}
-        >
-          支出
-        </Text>
-        <Text
-          className={`page-add__tab ${type === 'income' ? 'page-add__tab--active' : ''}`}
-          onClick={() => onTypeChange('income')}
-        >
-          收入
-        </Text>
+    <View className={pageClass}>
+      <PageHeader
+        title={editId ? '编辑账单' : '记一笔'}
+        left='cancel'
+      />
+
+      <SegToggle value={type} onChange={onTypeChange} />
+
+      <View className='page-add__amount-wrap'>
+        <Text className='page-add__currency'>¥</Text>
+        <Text className='page-add__amount'>{formatAmount(amount)}</Text>
       </View>
 
-      <Text className='page-add__amount'>{formatAmount(amount)}</Text>
+      <Text className='section-title'>选择分类</Text>
 
       <CategoryGrid
         categories={filteredCategories}
@@ -119,10 +124,13 @@ export default function AddPage() {
 
       <View className='page-add__footer'>
         <Picker mode='date' value={date} onChange={e => setDate(e.detail.value)}>
-          <View className='page-add__date'>📅 {date.slice(8, 10)}</View>
+          <View className='page-add__date pressable'>
+            <Text className='page-add__date-label'>日期</Text>
+            <Text className='page-add__date-value'>{date.replace(/-/g, '.')}</Text>
+          </View>
         </Picker>
         <View
-          className={`page-add__done ${canSubmit ? '' : 'page-add__done--disabled'}`}
+          className={`page-add__done pressable ${canSubmit ? '' : 'page-add__done--disabled'}`}
           onClick={handleSubmit}
         >
           <Text>完成</Text>

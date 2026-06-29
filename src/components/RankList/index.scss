@@ -1,35 +1,86 @@
 .rank-list {
-  padding: 0 16px 100px;
+  padding: 0 var(--space-page) var(--tab-bar-offset);
 }
 
 .rank-list__row {
-  margin-bottom: 14px;
+  margin-bottom: 24px;
+  padding: 20px;
+  background: var(--surface);
+  border-radius: var(--radius-item);
+  border: 1px solid var(--surface-border);
 }
 
 .rank-list__top {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 6px;
+  align-items: center;
+  margin-bottom: 14px;
+  gap: 12px;
+}
+
+.rank-list__left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.rank-list__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .rank-list__name {
-  font-size: 13px;
+  font-size: var(--text-list);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.rank-list__right {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.rank-list__amount {
+  display: block;
+  font-size: var(--text-body);
+  font-weight: 700;
   color: var(--text-primary);
 }
 
 .rank-list__percent {
-  font-size: 12px;
+  display: block;
+  font-size: var(--text-caption);
   color: var(--text-secondary);
+  margin-top: 4px;
 }
 
 .rank-list__bar-bg {
-  height: 6px;
+  height: 12px;
   background: var(--surface-border);
-  border-radius: 3px;
+  border-radius: 6px;
   overflow: hidden;
 }
 
 .rank-list__bar {
   height: 100%;
-  border-radius: 3px;
+  border-radius: 6px;
+  min-width: 4px;
+}
+
+.rank-list__empty-wrap {
+  padding: 48px var(--space-page) var(--tab-bar-offset);
+}
+
+.rank-list__empty {
+  display: block;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: var(--text-body);
+  padding: 48px;
+  background: var(--surface);
+  border-radius: var(--radius-card);
+  border: 1px dashed var(--surface-border);
 }

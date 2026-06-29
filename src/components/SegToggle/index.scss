@@ -1,0 +1,33 @@
+.seg-toggle {
+  display: flex;
+  margin: 0 var(--space-page) var(--space-item);
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 6px;
+  border: 1px solid var(--surface-border);
+}
+
+.seg-toggle__tab {
+  flex: 1;
+  text-align: center;
+  padding: 16px 18px;
+  font-size: var(--text-body);
+  color: var(--text-secondary);
+  border-radius: 999px;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.seg-toggle--expense .seg-toggle__tab--active {
+  background: rgba(251, 146, 60, 0.15);
+  color: var(--expense);
+  font-weight: 700;
+}
+
+.seg-toggle--income .seg-toggle__tab--active {
+  background: rgba(74, 222, 128, 0.15);
+  color: var(--income);
+  font-weight: 700;
+}

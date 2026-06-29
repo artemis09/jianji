@@ -6,4 +6,293 @@ page {
 
 .theme-root {
   min-height: 100vh;
+
+  /* 750 设计稿字号体系（与登录页一致） */
+  --text-caption: 24px;
+  --text-secondary-size: 26px;
+  --text-body: 28px;
+  --text-list: 30px;
+  --text-title: 34px;
+  --text-heading: 36px;
+  --text-balance: 56px;
+  --text-amount-lg: 72px;
+
+  /* 间距与圆角 */
+  --page-header-top: 88px;
+  --space-page: 32px;
+  --space-section: 24px;
+  --space-item: 16px;
+  --radius-card: 24px;
+  --radius-item: 16px;
+  --icon-md: 48px;
+  --tab-fab-size: 56px;
+  --tab-bar-offset: 160px;
+}
+
+/* 触控反馈 — ui-ux-pro-max: min 44px touch targets + press state */
+.pressable:active {
+  opacity: 0.72;
+  transform: scale(0.98);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.theme-root--warm {
+  --page-bg: #1c1917;
+  --surface: #292524;
+  --surface-border: #3d3835;
+  --text-primary: #fafaf9;
+  --text-secondary: #a8a29e;
+  --primary: #ffb800;
+  --primary-gradient: linear-gradient(135deg, #ffd100, #ffb800, #ff9500);
+  --btn-gradient: linear-gradient(135deg, #ffd100, #ff9500);
+  --expense: #fb923c;
+  --income: #4ade80;
+  --glow: 0 0 24px rgba(255, 184, 0, 0.2);
+}
+
+.theme-root--mint {
+  --page-bg: #ecfdf5;
+  --surface: #059669;
+  --surface-border: #047857;
+  --text-primary: #064e3b;
+  --text-secondary: #6ee7b7;
+  --primary: #10b981;
+  --primary-gradient: linear-gradient(135deg, #34d399, #10b981, #059669);
+  --btn-gradient: linear-gradient(135deg, #34d399, #059669);
+  --expense: #059669;
+  --income: #4ade80;
+}
+
+.theme-root--dark {
+  --page-bg: #0a0a0a;
+  --surface: #141414;
+  --surface-border: #262626;
+  --text-primary: #f5f5f5;
+  --text-secondary: #737373;
+  --primary: #d4af37;
+  --primary-gradient: linear-gradient(135deg, #f5e6a3, #d4af37, #b8960c);
+  --btn-gradient: linear-gradient(135deg, #f5e6a3, #b8960c);
+  --expense: #f87171;
+  --income: #a3e635;
+}
+
+.theme-root--candy {
+  --page-bg: #ffffff;
+  --surface: #fdf2f8;
+  --surface-border: #fbcfe8;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --primary: #f472b6;
+  --primary-gradient: linear-gradient(135deg, #f472b6, #ec4899, #db2777);
+  --btn-gradient: linear-gradient(135deg, #f472b6, #db2777);
+  --expense: #db2777;
+  --income: #2563eb;
+}
+
+.theme-root--caramel {
+  --page-bg: #fef7ed;
+  --surface: linear-gradient(145deg, #c2410c, #9a3412);
+  --surface-border: #fdba74;
+  --text-primary: #44403c;
+  --text-secondary: #78716c;
+  --primary: #c2410c;
+  --primary-gradient: linear-gradient(145deg, #ea580c, #c2410c, #9a3412);
+  --btn-gradient: linear-gradient(135deg, #ea580c, #9a3412);
+  --expense: #c2410c;
+  --income: #84cc16;
+}
+
+.auth-gate {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  box-sizing: border-box;
+  gap: 24px;
+}
+
+.auth-gate__title {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.auth-gate__desc {
+  font-size: 28px;
+  color: var(--text-secondary);
+  text-align: center;
+  line-height: 1.6;
+}
+
+.auth-gate__btn {
+  width: 320px;
+  height: 88px;
+  line-height: 88px;
+  border-radius: 44px;
+  background: var(--btn-gradient);
+  color: #1c1917;
+  font-size: 30px;
+  font-weight: 600;
+  border: none;
+
+  &::after {
+    border: none;
+  }
+}
+
+.theme-root--dark .auth-gate__btn,
+.theme-root--mint .auth-gate__btn,
+.theme-root--candy .auth-gate__btn {
+  color: #fff;
+}
+
+/* ── 统一页面布局 ── */
+.page {
+  min-height: 100vh;
+  background: var(--page-bg);
+  color: var(--text-primary);
+}
+
+.page__body {
+  padding: 0 var(--space-page) var(--space-section);
+}
+
+.page__body--tab {
+  padding-bottom: var(--tab-bar-offset);
+}
+
+.page__hint {
+  display: block;
+  padding: 0 var(--space-page) var(--space-section);
+  font-size: var(--text-body);
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ── 卡片 / 列表 / 分区标题 ── */
+.surface-card {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-card);
+}
+
+.list-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28px var(--space-section);
+  background: var(--surface);
+  border-radius: var(--radius-item);
+  border: 1px solid var(--surface-border);
+  margin-bottom: 12px;
+  color: var(--text-primary);
+  font-size: var(--text-list);
+}
+
+.list-row__arrow {
+  color: var(--text-secondary);
+  font-size: var(--text-heading);
+}
+
+.section-title {
+  display: block;
+  padding: 0 var(--space-page) var(--space-item);
+  font-size: var(--text-list);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ── 统计芯片 ── */
+.chip-row {
+  display: flex;
+  gap: 12px;
+  padding: 0 var(--space-page) var(--space-section);
+}
+
+.chip {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-item);
+  padding: 16px 12px;
+  text-align: center;
+}
+
+.chip__label {
+  display: block;
+  font-size: var(--text-caption);
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.chip__value {
+  display: block;
+  font-size: var(--text-body);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.chip__value--income {
+  color: var(--income);
+}
+
+.chip__value--expense {
+  color: var(--expense);
+}
+
+/* ── 月份胶囊选择器 ── */
+.month-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--text-body);
+  color: var(--text-primary);
+  padding: 14px 24px;
+  background: var(--surface);
+  border-radius: 999px;
+  border: 1px solid var(--surface-border);
+  min-height: 64px;
+}
+
+.month-pill__arrow {
+  font-size: var(--text-caption);
+  color: var(--text-secondary);
+}
+
+/* ── 表单 ── */
+.input-field {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-item);
+  padding: 24px var(--space-section);
+  margin-bottom: 12px;
+  color: var(--text-primary);
+  font-size: var(--text-body);
+  height: auto;
+  min-height: 88px;
+  box-sizing: border-box;
+}
+
+.btn-primary {
+  background: var(--btn-gradient) !important;
+  color: #1c1917 !important;
+  border: none;
+  border-radius: var(--radius-item);
+  font-weight: 600;
+  font-size: var(--text-list);
+  height: 96px;
+  line-height: 96px;
+  margin-top: 8px;
+
+  &::after {
+    border: none;
+  }
+}
+
+.theme-root--dark .btn-primary,
+.theme-root--mint .btn-primary,
+.theme-root--candy .btn-primary {
+  color: #fff !important;
 }

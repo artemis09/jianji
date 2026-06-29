@@ -10,7 +10,7 @@ export default function ProfileEntry() {
     <View className='profile-entry'>
       <Text className='profile-entry__title'>简记</Text>
       <View
-        className='profile-entry__mine'
+        className='profile-entry__mine pressable'
         onClick={() => Taro.navigateTo({ url: '/pages/profile/index' })}
       >
         {user?.avatarUrl ? (

@@ -1,5 +1,5 @@
 import { View } from '@tarojs/components'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { PropsWithChildren } from 'react'
 import './index.scss'
 
@@ -9,22 +9,30 @@ interface IceSheetProps {
 }
 
 export default function IceSheet({ visible, onClose, children }: PropsWithChildren<IceSheetProps>) {
-  const [animState, setAnimState] = useState<'enter' | 'exit' | 'hidden'>('hidden')
+  const [animState, setAnimState] = useState<'idle' | 'enter' | 'exit' | 'hidden'>('hidden')
+  const rafRef = useRef<number>(0)
 
   useEffect(() => {
     if (visible) {
-      setAnimState('enter')
-    } else if (animState === 'enter') {
+      // Step 1: render DOM nodes at off-screen position (translateY(100%))
+      setAnimState('idle')
+      // Step 2: next frame, apply --enter class to trigger transition
+      rafRef.current = requestAnimationFrame(() => {
+        setAnimState('enter')
+      })
+    } else if (animState === 'enter' || animState === 'idle') {
       setAnimState('exit')
       const timer = setTimeout(() => setAnimState('hidden'), 300)
       return () => clearTimeout(timer)
     }
+    return () => cancelAnimationFrame(rafRef.current)
   }, [visible])
 
   if (animState === 'hidden') return null
 
-  const sheetClass = `ice-sheet ${animState === 'enter' ? 'ice-sheet--enter' : 'ice-sheet--exit'}`
-  const maskClass = `ice-sheet__mask ${animState === 'enter' ? 'ice-sheet__mask--enter' : 'ice-sheet__mask--exit'}`
+  const isEnter = animState === 'enter'
+  const sheetClass = `ice-sheet ${isEnter ? 'ice-sheet--enter' : ''} ${animState === 'exit' ? 'ice-sheet--exit' : ''}`
+  const maskClass = `ice-sheet__mask ${isEnter ? 'ice-sheet__mask--enter' : ''} ${animState === 'exit' ? 'ice-sheet__mask--exit' : ''}`
 
   return (
     <View className={sheetClass}>

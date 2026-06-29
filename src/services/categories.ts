@@ -13,7 +13,6 @@ export function initDefaultCategories(userId: string): Category[] {
   for (const category of categories) {
     enqueueSync('categories', 'create', category)
   }
-  void triggerSync()
   return categories
 }
 

@@ -1,5 +1,7 @@
 import { View, Text } from '@tarojs/components'
 import { useTheme } from '@/contexts/ThemeContext'
+import { useThemePageClass } from '@/hooks/useThemePageClass'
+import PageHeader from '@/components/PageHeader'
 import { THEMES } from '@/themes/tokens'
 import type { ThemeId } from '@/types'
 import './index.scss'
@@ -13,26 +15,30 @@ const THEME_META: Record<ThemeId, { name: string; desc: string }> = {
 }
 
 export default function ThemePage() {
+  const pageClass = useThemePageClass('page page-theme')
   const { themeId, setTheme } = useTheme()
   const ids = Object.keys(THEMES) as ThemeId[]
 
   return (
-    <View className='page-theme'>
-      <Text className='page-theme__hint'>选择后立即生效</Text>
-      {ids.map(id => (
-        <View
-          key={id}
-          className={`page-theme__card ${themeId === id ? 'page-theme__card--active' : ''}`}
-          onClick={() => setTheme(id)}
-        >
-          <View className='page-theme__preview' style={{ background: THEMES[id].primaryGradient }} />
-          <View className='page-theme__info'>
-            <Text className='page-theme__name'>{THEME_META[id].name}</Text>
-            <Text className='page-theme__desc'>{THEME_META[id].desc}</Text>
+    <View className={pageClass}>
+      <PageHeader title='外观主题' left='back' />
+      <Text className='page__hint'>选择后立即生效</Text>
+      <View className='page__body'>
+        {ids.map(id => (
+          <View
+            key={id}
+            className={`page-theme__card pressable ${themeId === id ? 'page-theme__card--active' : ''}`}
+            onClick={() => setTheme(id)}
+          >
+            <View className='page-theme__preview' style={{ background: THEMES[id].primaryGradient }} />
+            <View className='page-theme__info'>
+              <Text className='page-theme__name'>{THEME_META[id].name}</Text>
+              <Text className='page-theme__desc'>{THEME_META[id].desc}</Text>
+            </View>
+            {themeId === id && <Text className='page-theme__check'>✓</Text>}
           </View>
-          {themeId === id && <Text className='page-theme__check'>✓</Text>}
-        </View>
-      ))}
+        ))}
+      </View>
     </View>
   )
 }

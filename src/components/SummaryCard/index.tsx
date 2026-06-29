@@ -7,23 +7,31 @@ interface SummaryCardProps {
   income: number
   expense: number
   balance: number
-  monthLabel: string
 }
 
-export default function SummaryCard({ income, expense, balance, monthLabel }: SummaryCardProps) {
+export default function SummaryCard({ income, expense, balance }: SummaryCardProps) {
   const { themeId } = useTheme()
   const isWarm = themeId === 'warm'
 
   return (
     <View className={`summary-card ${isWarm ? 'summary-card--warm' : ''}`}>
       <View className='summary-card__inner'>
-        <Text className='summary-card__label'>{monthLabel} 结余</Text>
-        <Text className={`summary-card__balance ${isWarm ? 'summary-card__balance--gradient' : ''}`}>
-          {formatAmount(balance)}
-        </Text>
+        <Text className='summary-card__label'>本月结余 (元)</Text>
+        <View className='summary-card__balance-row'>
+          <Text className='summary-card__currency'>¥</Text>
+          <Text className={`summary-card__balance ${isWarm ? 'summary-card__balance--gradient' : ''}`}>
+            {formatAmount(balance)}
+          </Text>
+        </View>
         <View className='summary-card__row'>
-          <Text className='summary-card__meta'>收入 <Text className='summary-card__income'>{formatAmount(income)}</Text></Text>
-          <Text className='summary-card__meta'>支出 <Text className='summary-card__expense'>{formatAmount(expense)}</Text></Text>
+          <View className='summary-card__col'>
+            <Text className='summary-card__meta'>收入</Text>
+            <Text className='summary-card__value summary-card__income'>¥{formatAmount(income)}</Text>
+          </View>
+          <View className='summary-card__col'>
+            <Text className='summary-card__meta'>支出</Text>
+            <Text className='summary-card__value summary-card__expense'>¥{formatAmount(expense)}</Text>
+          </View>
         </View>
       </View>
     </View>

@@ -4,9 +4,9 @@
   right: 0;
   bottom: 0;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-around;
-  padding: 8px 16px calc(8px + env(safe-area-inset-bottom));
+  padding: 8px var(--space-page) calc(12px + env(safe-area-inset-bottom));
   background: var(--surface);
   border-top: 1px solid var(--surface-border);
   z-index: 100;
@@ -14,32 +14,94 @@
 
 .tab-bar__item {
   flex: 1;
-  text-align: center;
-  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 0 4px;
+  min-height: 88px;
+}
+
+.tab-bar__label {
+  font-size: var(--text-caption);
   color: var(--text-secondary);
 }
 
-.tab-bar__item--active {
+.tab-bar__item--active .tab-bar__label {
   color: var(--primary);
   font-weight: 600;
 }
 
+.tab-bar__item--active .tab-bar__icon {
+  opacity: 1;
+}
+
+.tab-bar__icon {
+  width: 40px;
+  height: 32px;
+  opacity: 0.45;
+  position: relative;
+}
+
+.tab-bar__icon--list::before,
+.tab-bar__icon--list::after,
+.tab-bar__icon--list {
+  display: block;
+}
+
+.tab-bar__icon--list {
+  border-top: 4px solid var(--primary);
+  border-bottom: 4px solid var(--primary);
+  height: 18px;
+  margin-top: 7px;
+  box-shadow: 0 9px 0 var(--primary);
+}
+
+.tab-bar__item--active .tab-bar__icon--list {
+  border-color: var(--primary);
+  box-shadow: 0 9px 0 var(--primary);
+}
+
+.tab-bar__icon--chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+  padding-bottom: 2px;
+}
+
+.tab-bar__icon--chart::before,
+.tab-bar__icon--chart::after {
+  content: '';
+  width: 8px;
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+.tab-bar__icon--chart::before {
+  height: 14px;
+}
+
+.tab-bar__icon--chart::after {
+  height: 24px;
+}
+
 .tab-bar__fab {
-  width: 48px;
-  height: 48px;
-  margin-top: -24px;
+  width: var(--tab-fab-size);
+  height: var(--tab-fab-size);
+  margin-bottom: 20px;
   border-radius: 50%;
   background: var(--btn-gradient);
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: var(--glow, 0 4px 16px rgba(0, 0, 0, 0.2));
-  border: 3px solid var(--page-bg);
+  border: 4px solid var(--page-bg);
 }
 
 .tab-bar__fab-icon {
   color: #1c1917;
-  font-size: 28px;
+  font-size: 40px;
   font-weight: 700;
   line-height: 1;
 }

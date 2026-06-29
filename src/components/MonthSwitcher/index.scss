@@ -1,0 +1,33 @@
+.month-switcher {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 0 var(--space-page) var(--space-item);
+}
+
+.month-switcher__label {
+  font-size: var(--text-list);
+  font-weight: 600;
+  color: var(--text-primary);
+  min-width: 200px;
+  text-align: center;
+}
+
+.month-switcher__btn {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.month-switcher__arrow {
+  font-size: 36px;
+  line-height: 1;
+  color: var(--text-secondary);
+  margin-top: -4px;
+}

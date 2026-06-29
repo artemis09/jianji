@@ -2,11 +2,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 48px 16px 12px;
+  padding: var(--page-header-top) var(--space-page) var(--space-section);
 }
 
 .profile-entry__title {
-  font-size: 18px;
+  font-size: var(--text-heading);
   font-weight: 700;
   color: var(--text-primary);
 }
@@ -14,26 +14,31 @@
 .profile-entry__mine {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
 }
 
 .profile-entry__avatar {
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
 }
 
 .profile-entry__avatar--placeholder {
-  background: var(--surface);
+  background: var(--page-bg);
   border: 1px solid var(--surface-border);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: var(--text-caption);
   color: var(--text-secondary);
 }
 
 .profile-entry__label {
-  font-size: 13px;
-  color: var(--text-secondary);
+  font-size: var(--text-body);
+  color: var(--text-primary);
+  font-weight: 500;
 }

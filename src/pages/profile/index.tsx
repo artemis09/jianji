@@ -1,7 +1,9 @@
 import { View, Text } from '@tarojs/components'
 import Taro from '@tarojs/taro'
-import { storage } from '@/services/storage'
 import { useAuth } from '@/contexts/AuthContext'
+import { useThemePageClass } from '@/hooks/useThemePageClass'
+import PageHeader from '@/components/PageHeader'
+import { storage } from '@/services/storage'
 import './index.scss'
 
 const MENU = [
@@ -11,6 +13,7 @@ const MENU = [
 ]
 
 export default function ProfilePage() {
+  const pageClass = useThemePageClass('page page-profile')
   const { user } = useAuth()
   const pending = storage.getPendingQueue().length
 
@@ -23,17 +26,20 @@ export default function ProfilePage() {
   }
 
   return (
-    <View className='page-profile'>
-      <View className='page-profile__header'>
-        <Text className='page-profile__phone'>{user?.phone || '未绑定手机'}</Text>
-        <Text className='page-profile__sync'>待同步 {pending} 条</Text>
-      </View>
-      {MENU.map(item => (
-        <View key={item.title} className='page-profile__item' onClick={() => onItem(item)}>
-          <Text>{item.title}</Text>
-          <Text className='page-profile__arrow'>›</Text>
+    <View className={pageClass}>
+      <PageHeader title='我的' left='back' />
+      <View className='page__body'>
+        <View className='surface-card page-profile__user'>
+          <Text className='page-profile__phone'>{user?.phone || '未绑定手机'}</Text>
+          <Text className='page-profile__sync'>待同步 {pending} 条</Text>
         </View>
-      ))}
+        {MENU.map(item => (
+          <View key={item.title} className='list-row pressable' onClick={() => onItem(item)}>
+            <Text>{item.title}</Text>
+            <Text className='list-row__arrow'>›</Text>
+          </View>
+        ))}
+      </View>
     </View>
   )
 }

@@ -2,15 +2,12 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
   type PropsWithChildren,
 } from 'react'
-import { View } from '@tarojs/components'
 import type { ThemeId, ThemeTokens } from '@/types'
 import { storage } from '@/services/storage'
-import { applyTheme, getThemeCssVars } from '@/themes/apply-theme'
 import { THEMES } from '@/themes/tokens'
 
 interface ThemeContextValue {
@@ -34,14 +31,6 @@ export function ThemeProvider({ children }: PropsWithChildren) {
     }
   }, [])
 
-  useEffect(() => {
-    if (process.env.TARO_ENV === 'h5' && typeof document !== 'undefined') {
-      applyTheme(document.documentElement, themeId)
-    }
-  }, [themeId])
-
-  const themeStyle = useMemo(() => getThemeCssVars(themeId), [themeId])
-
   const value = useMemo(
     () => ({
       themeId,
@@ -51,13 +40,7 @@ export function ThemeProvider({ children }: PropsWithChildren) {
     [themeId, setTheme],
   )
 
-  return (
-    <ThemeContext.Provider value={value}>
-      <View className='theme-root' style={themeStyle} data-theme={themeId}>
-        {children}
-      </View>
-    </ThemeContext.Provider>
-  )
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
 }
 
 export function useTheme(): ThemeContextValue {

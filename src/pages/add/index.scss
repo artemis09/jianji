@@ -1,69 +1,84 @@
 .page-add {
-  min-height: 100vh;
-  background: var(--page-bg);
-  padding-top: 48px;
+  display: flex;
+  flex-direction: column;
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-.page-add__toggle {
+.page-add__amount-wrap {
   display: flex;
-  margin: 0 16px;
-  background: var(--surface);
-  border-radius: 10px;
-  padding: 4px;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+  margin: 12px var(--space-page) 8px;
 }
 
-.page-add__tab {
-  flex: 1;
-  text-align: center;
-  padding: 10px;
-  font-size: 14px;
-  color: var(--text-secondary);
-  border-radius: 8px;
-}
-
-.page-add__tab--active {
-  background: var(--page-bg);
-  color: var(--primary);
+.page-add__currency {
+  font-size: var(--text-title);
   font-weight: 600;
+  color: var(--text-secondary);
 }
 
 .page-add__amount {
-  display: block;
-  text-align: center;
-  font-size: 48px;
+  font-size: var(--text-amount-lg);
   font-weight: 800;
   color: var(--text-primary);
-  margin: 24px 0 8px;
+  line-height: 1.1;
+  letter-spacing: -1px;
 }
 
 .page-add__footer {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px 24px;
+  align-items: stretch;
+  gap: var(--space-item);
+  padding: var(--space-section) var(--space-page) 32px;
+  margin-top: auto;
 }
 
 .page-add__date {
-  padding: 12px 16px;
+  padding: 20px 24px;
   background: var(--surface);
-  border-radius: 10px;
-  font-size: 14px;
-  color: var(--text-primary);
+  border-radius: var(--radius-item);
   border: 1px solid var(--surface-border);
+  min-width: 160px;
+  min-height: 88px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.page-add__date-label {
+  font-size: var(--text-caption);
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.page-add__date-value {
+  font-size: var(--text-body);
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
 .page-add__done {
   flex: 1;
   text-align: center;
-  padding: 14px;
-  border-radius: 12px;
+  padding: 20px;
+  border-radius: var(--radius-item);
   background: var(--btn-gradient);
   color: #1c1917;
   font-weight: 700;
-  font-size: 16px;
+  font-size: var(--text-title);
+  min-height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .page-add__done--disabled {
   opacity: 0.4;
+}
+
+.theme-root--dark .page-add__done,
+.theme-root--mint .page-add__done,
+.theme-root--candy .page-add__done {
+  color: #fff;
 }

@@ -1,6 +1,13 @@
 import Taro from '@tarojs/taro'
 import { genId } from '@/utils/id'
 import type { Record, Category, PendingOp } from '@/types'
+import {
+  CLOUD_DB_TIMEOUT,
+  getMissingCollectionName,
+  isCollectionNotExistError,
+  isTimeoutError,
+  withTimeout,
+} from './cloud'
 import { storage } from './storage'
 
 type Collection = PendingOp['collection']
@@ -22,7 +29,28 @@ export function enqueueSync(
   storage.setPendingQueue(queue)
 }
 
+let collectionHintShown = false
+
+function showCollectionSetupHint(missing?: string | null): void {
+  if (collectionHintShown) return
+  collectionHintShown = true
+
+  const hint = missing
+    ? `缺少集合「${missing}」。请在云开发控制台 → 数据库中新建：users、categories、records（共 3 个）。`
+    : '请在云开发控制台 → 数据库中新建：users、categories、records（共 3 个）。'
+
+  Taro.showModal({
+    title: '数据库集合未创建',
+    content: `${hint}权限建议设为「仅创建者可读写」。`,
+    showCancel: false,
+  })
+}
+
 async function applyOp(op: PendingOp): Promise<void> {
+  await withTimeout(runOp(op), CLOUD_DB_TIMEOUT, `sync:${op.collection}`)
+}
+
+async function runOp(op: PendingOp): Promise<void> {
   const db = Taro.cloud.database()
   const col = db.collection(op.collection)
 
@@ -65,18 +93,27 @@ export async function triggerSync(): Promise<void> {
   if (queue.length === 0) return
 
   const remaining: PendingOp[] = []
-  for (const op of queue) {
+  const batch = queue.slice(0, 20)
+  for (const op of batch) {
     try {
       await applyOp(op)
       markLocalSynced(op)
     } catch (err) {
-      console.error('sync failed', op.id, err)
+      if (isTimeoutError(err)) {
+        console.warn('sync timeout', op.id)
+      } else {
+        console.error('sync failed', op.id, err)
+      }
+      if (isCollectionNotExistError(err)) {
+        showCollectionSetupHint(getMissingCollectionName(err))
+      }
       remaining.push(op)
     }
   }
 
-  storage.setPendingQueue(remaining)
-  if (remaining.length < queue.length) {
+  const untouched = queue.slice(batch.length)
+  storage.setPendingQueue([...remaining, ...untouched])
+  if (remaining.length < batch.length) {
     storage.setLastSyncAt(Date.now())
   }
 }
@@ -89,7 +126,9 @@ export function setupNetworkListener(): void {
 
   Taro.onNetworkStatusChange(res => {
     if (res.isConnected) {
-      void triggerSync()
+      setTimeout(() => {
+        void triggerSync()
+      }, 1500)
     }
   })
 }

@@ -1,12 +1,12 @@
 .donut-chart {
   display: flex;
   justify-content: center;
-  padding: 24px 0;
+  padding: 32px 0;
 }
 
 .donut-chart__ring {
-  width: 140px;
-  height: 140px;
+  width: 280px;
+  height: 280px;
   border-radius: 50%;
   background: var(--primary-gradient);
   display: flex;
@@ -16,8 +16,8 @@
 }
 
 .donut-chart__hole {
-  width: 96px;
-  height: 96px;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
   background: var(--page-bg);
   display: flex;
@@ -27,13 +27,13 @@
 }
 
 .donut-chart__label {
-  font-size: 11px;
+  font-size: var(--text-secondary-size);
   color: var(--text-secondary);
 }
 
 .donut-chart__total {
-  font-size: 18px;
+  font-size: var(--text-title);
   font-weight: 700;
   color: var(--text-primary);
-  margin-top: 4px;
+  margin-top: 8px;
 }

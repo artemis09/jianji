@@ -1,0 +1,31 @@
+.budget-form {
+  margin-top: var(--space-section);
+}
+
+.budget-form__label {
+  display: block;
+  font-size: var(--text-body);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-item);
+}
+
+.budget-form__hint {
+  display: block;
+  font-size: var(--text-caption);
+  color: var(--text-secondary);
+  margin-top: 8px;
+}
+
+.budget-form__remove {
+  width: 100%;
+  background: transparent !important;
+  color: var(--expense) !important;
+  border: 1px solid var(--expense);
+  margin-top: 12px;
+  height: 96px;
+  line-height: 96px;
+  border-radius: var(--radius-item);
+  font-weight: 600;
+  font-size: var(--text-list);
+  text-align: center;
+}

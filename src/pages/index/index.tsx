@@ -1,11 +1,13 @@
 import { View, Text, Button } from '@tarojs/components'
 import { useState, useMemo } from 'react'
-import Taro, { useReady, usePullDownRefresh, useReachBottom } from '@tarojs/taro'
+import Taro, { useReady, useDidShow } from '@tarojs/taro'
 import ProfileEntry from '@/components/ProfileEntry'
 import MonthSwitcher from '@/components/MonthSwitcher'
 import AddSheet from '@/components/AddSheet'
 import SummaryCard from '@/components/SummaryCard'
 import RecordList from '@/components/RecordList'
+import AppTabBar from '@/components/AppTabBar'
+import { useTabBarPage } from '@/hooks/useTabBarPage'
 import { useThemePageClass } from '@/hooks/useThemePageClass'
 import { getBudget } from '@/services/budget'
 import { getRecords, deleteRecord } from '@/services/records'
@@ -17,6 +19,7 @@ import './index.scss'
 
 export default function Index() {
   const pageClass = useThemePageClass('page page-index')
+  useTabBarPage()
   const hasPhone = !!storage.getUser()?.phone
   const [records, setRecords] = useState(() => getRecords())
   const [categories, setCategories] = useState(() => getCategories())
@@ -41,6 +44,9 @@ export default function Index() {
     Taro.eventCenter.on('openAddSheet', () => {
       setAddVisible(true)
     })
+    Taro.eventCenter.on('setIndexMonth', (m: string) => {
+      if (m) setMonth(m)
+    })
     if (!storage.getUser()?.phone) return
     refresh()
     setTimeout(() => {
@@ -48,20 +54,8 @@ export default function Index() {
     }, 3000)
   })
 
-  usePullDownRefresh(async () => {
-    try {
-      await triggerSync()
-      refresh()
-      Taro.showToast({ title: '已刷新', icon: 'success', duration: 1000 })
-    } catch {
-      Taro.showToast({ title: '刷新失败', icon: 'none' })
-    } finally {
-      Taro.stopPullDownRefresh()
-    }
-  })
-
-  useReachBottom(() => {
-    Taro.showToast({ title: '已加载全部账单', icon: 'none', duration: 1000 })
+  useDidShow(() => {
+    refresh()
   })
 
   const handleDelete = (id: string) => {
@@ -117,6 +111,7 @@ export default function Index() {
         onEdit={handleEdit}
       />
       <AddSheet visible={addVisible} onClose={() => setAddVisible(false)} onSaved={refresh} />
+      {!addVisible && <AppTabBar activeTab='index' />}
     </View>
   )
 }

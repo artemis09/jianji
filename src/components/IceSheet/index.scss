@@ -8,7 +8,7 @@
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0);
-  transition: background 0.3s ease;
+  transition: background 0.3s ease-out;
 
   &--enter {
     background: rgba(0, 0, 0, 0.5);

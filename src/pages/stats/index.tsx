@@ -7,9 +7,10 @@ import SegToggle from '@/components/SegToggle'
 import DonutChart from '@/components/DonutChart'
 import TrendChart from '@/components/TrendChart'
 import RankList from '@/components/RankList'
-import { useThemePageClass } from '@/hooks/useThemePageClass'
+import TabPageShell from '@/components/TabPageShell'
 import { getRecords } from '@/services/records'
 import { getCategories } from '@/services/categories'
+import { triggerSync, getPendingSyncCount } from '@/services/sync'
 import { calcMonthSummary, calcCategoryBreakdown } from '@/utils/stats'
 import { formatAmount } from '@/utils/amount'
 import { getBudget } from '@/services/budget'
@@ -25,7 +26,7 @@ function pctChange(current: number, last: number): { pct: string; isUp: boolean 
 const CHART_COLORS = ['#FFD100', '#FFB800', '#FF9500', '#fb923c', '#4ade80', '#3B82F6']
 
 export default function StatsPage() {
-  const pageClass = useThemePageClass('page page-stats')
+  const pageClass = 'page-stats'
   const now = new Date()
   const [month, setMonth] = useState(now.toISOString().slice(0, 7))
   const [statType, setStatType] = useState<RecordType>('expense')
@@ -35,6 +36,7 @@ export default function StatsPage() {
   useDidShow(() => {
     setRecords(getRecords())
     setCategories(getCategories())
+    if (getPendingSyncCount() > 0) triggerSync()
   })
 
   const summary = calcMonthSummary(records, month)
@@ -86,7 +88,7 @@ export default function StatsPage() {
   )
 
   return (
-    <View className={pageClass}>
+    <TabPageShell activeTab='stats' pageClass={pageClass}>
       <PageHeader title='收支统计' right={monthPicker} />
 
       <View className='chip-row'>
@@ -140,6 +142,6 @@ export default function StatsPage() {
       />
       <Text className='section-title'>分类排行</Text>
       <RankList items={rankItems} />
-    </View>
+    </TabPageShell>
   )
 }

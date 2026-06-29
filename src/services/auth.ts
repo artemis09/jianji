@@ -1,6 +1,7 @@
 import type { User } from '@/types'
 import { initDefaultCategories } from './categories'
 import { callCloudFunction, initCloud } from './cloud'
+import { pullFromCloud } from './sync'
 import { storage } from './storage'
 
 async function fetchCloudLogin(): Promise<User> {
@@ -15,6 +16,10 @@ async function fetchCloudLogin(): Promise<User> {
     storage.setUser(user)
   }
 
+  // 从云端拉取已有数据，避免新设备产生重复
+  await pullFromCloud()
+
+  // 如果 pullFromCloud 已经拉取了分类，initDefaultCategories 内部会跳过
   initDefaultCategories(openid)
   return user
 }
@@ -28,7 +33,6 @@ export async function silentLogin(): Promise<User> {
   }
   return fetchCloudLogin()
 }
-
 /** 后台刷新 openid，失败时不抛错 */
 export async function refreshCloudLogin(): Promise<User | null> {
   try {
@@ -60,6 +64,9 @@ export async function ensureCloudLogin(): Promise<User> {
   if (cached?.openid) {
     return cached
   }
-  await initCloud()
+  const ready = await initCloud()
+  if (!ready) {
+    throw new Error('云开发未就绪，请检查是否已开通云开发并配置环境 ID')
+  }
   return fetchCloudLogin()
 }

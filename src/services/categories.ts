@@ -2,7 +2,7 @@ import { createDefaultCategories } from '@/constants/default-categories'
 import { genId } from '@/utils/id'
 import type { Category } from '@/types'
 import { storage } from './storage'
-import { enqueueSync, triggerSync } from './sync'
+import { enqueueSync, scheduleSync } from './sync'
 
 export function initDefaultCategories(userId: string): Category[] {
   const existing = storage.getCategories()
@@ -20,11 +20,12 @@ export function addCategory(input: Omit<Category, '_id'>): Category {
   const category: Category = {
     ...input,
     _id: genId(),
+    syncStatus: 'pending',
   }
   const categories = storage.getCategories()
   storage.setCategories([...categories, category])
   enqueueSync('categories', 'create', category)
-  void triggerSync()
+  scheduleSync()
   return category
 }
 
@@ -40,11 +41,12 @@ export function updateCategory(
     ...categories[index],
     ...patch,
     _id: categories[index]._id,
+    syncStatus: 'pending',
   }
   categories[index] = updated
   storage.setCategories(categories)
   enqueueSync('categories', 'update', updated)
-  void triggerSync()
+  scheduleSync()
   return updated
 }
 
@@ -55,10 +57,17 @@ export function deleteCategory(id: string): boolean {
 
   storage.setCategories(categories.filter(c => c._id !== id))
   enqueueSync('categories', 'delete', category)
-  void triggerSync()
+  scheduleSync()
   return true
 }
 
 export function getCategories(): Category[] {
   return storage.getCategories()
+}
+
+export function hasCategoryName(userId: string, type: Category['type'], name: string): boolean {
+  const trimmed = name.trim()
+  return storage.getCategories().some(
+    c => c.userId === userId && c.type === type && c.name === trimmed,
+  )
 }

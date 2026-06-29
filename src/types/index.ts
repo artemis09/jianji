@@ -20,6 +20,7 @@ export interface Category {
   type: RecordType
   sort: number
   isDefault: boolean
+  syncStatus?: SyncStatus
 }
 
 export interface Record {

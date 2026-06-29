@@ -4,6 +4,8 @@ export interface MonthSummary {
   income: number
   expense: number
   balance: number
+  lastIncome: number
+  lastExpense: number
 }
 
 export interface CategoryBreakdownItem {
@@ -15,14 +17,28 @@ export interface CategoryBreakdownItem {
 type StatsRecord = Pick<Record, 'type' | 'amount' | 'date' | 'syncStatus' | 'categoryId'>
 
 export function calcMonthSummary(records: StatsRecord[], month: string): MonthSummary {
+  const [year, mon] = month.split('-')
+  let lastMonth: string
+  if (mon === '01') {
+    lastMonth = `${Number(year) - 1}-12`
+  } else {
+    lastMonth = `${year}-${String(Number(mon) - 1).padStart(2, '0')}`
+  }
+
   const filtered = records.filter(r => r.syncStatus !== 'deleted' && r.date.startsWith(month))
-  let income = 0
-  let expense = 0
+  const lastFiltered = records.filter(r => r.syncStatus !== 'deleted' && r.date.startsWith(lastMonth))
+
+  let income = 0, expense = 0, lastIncome = 0, lastExpense = 0
   for (const r of filtered) {
     if (r.type === 'income') income += r.amount
     else expense += r.amount
   }
-  return { income, expense, balance: income - expense }
+  for (const r of lastFiltered) {
+    if (r.type === 'income') lastIncome += r.amount
+    else lastExpense += r.amount
+  }
+
+  return { income, expense, balance: income - expense, lastIncome, lastExpense }
 }
 
 export function calcCategoryBreakdown(

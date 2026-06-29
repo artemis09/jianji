@@ -14,6 +14,12 @@ import { formatAmount } from '@/utils/amount'
 import type { RecordType } from '@/types'
 import './index.scss'
 
+function pctChange(current: number, last: number): { pct: string; isUp: boolean } | null {
+  if (last === 0) return current > 0 ? { pct: '∞', isUp: current > 0 } : null
+  const change = ((current - last) / last) * 100
+  return { pct: Math.abs(change).toFixed(1), isUp: change >= 0 }
+}
+
 const CHART_COLORS = ['#FFD100', '#FFB800', '#FF9500', '#fb923c', '#4ade80', '#3B82F6']
 
 export default function StatsPage() {
@@ -84,10 +90,28 @@ export default function StatsPage() {
         <View className='chip'>
           <Text className='chip__label'>收入</Text>
           <Text className='chip__value chip__value--income'>¥{formatAmount(summary.income)}</Text>
+          {(() => {
+            const cmp = pctChange(summary.income, summary.lastIncome)
+            if (!cmp) return null
+            return (
+              <Text className={`chip__compare ${cmp.isUp ? 'chip__compare--up' : 'chip__compare--down'}`}>
+                {cmp.isUp ? '↑' : '↓'}{cmp.pct}%
+              </Text>
+            )
+          })()}
         </View>
         <View className='chip'>
           <Text className='chip__label'>支出</Text>
           <Text className='chip__value chip__value--expense'>¥{formatAmount(summary.expense)}</Text>
+          {(() => {
+            const cmp = pctChange(summary.expense, summary.lastExpense)
+            if (!cmp) return null
+            return (
+              <Text className={`chip__compare ${!cmp.isUp ? 'chip__compare--up' : 'chip__compare--down'}`}>
+                {!cmp.isUp ? '↑' : '↓'}{cmp.pct}%
+              </Text>
+            )
+          })()}
         </View>
         <View className='chip'>
           <Text className='chip__label'>结余</Text>

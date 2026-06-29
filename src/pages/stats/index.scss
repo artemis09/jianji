@@ -1,3 +1,18 @@
 .page-stats {
   padding-bottom: var(--tab-bar-offset);
 }
+
+.chip__compare {
+  display: block;
+  font-size: var(--text-caption);
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.chip__compare--up {
+  color: var(--income);
+}
+
+.chip__compare--down {
+  color: var(--expense);
+}

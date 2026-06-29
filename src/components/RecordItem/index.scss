@@ -1,13 +1,30 @@
+.record-item-wrap {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 12px;
+  border-radius: var(--radius-item);
+}
+
 .record-item {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-item);
-  padding: 18px 18px 18px 16px;
+  padding: 20px;
   background: var(--surface);
   border: 1px solid var(--surface-border);
-  border-left: 3px solid var(--surface-border);
-  border-radius: 14px;
-  margin-bottom: 10px;
+  border-radius: var(--radius-item);
+  transition: transform 0.2s ease-out;
+  z-index: 1;
+}
+
+.record-item__color-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: 3px 0 0 3px;
 }
 
 .record-item__icon {
@@ -40,11 +57,26 @@
   line-height: 1.35;
 }
 
-.record-item__meta-text {
-  display: block;
+.record-item__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.record-item__badge {
+  display: inline-block;
   font-size: var(--text-caption);
   color: var(--text-secondary);
-  margin-top: 4px;
+}
+
+.record-item__time {
+  font-size: var(--text-caption);
+  color: var(--text-secondary);
+  &::before {
+    content: '·';
+    margin-right: 6px;
+  }
 }
 
 .record-item__amount {
@@ -60,4 +92,21 @@
 
 .record-item__amount--income {
   color: var(--income);
+}
+
+.record-item__delete-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 160px;
+  background: #ef4444;
+  color: #fff;
+  font-size: var(--text-list);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 var(--radius-item) var(--radius-item) 0;
+  z-index: 0;
 }

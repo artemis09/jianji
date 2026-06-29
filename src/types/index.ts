@@ -56,3 +56,10 @@ export interface ThemeTokens {
   income: string
   glow?: string
 }
+
+export interface Budget {
+  _id: string
+  userId: string
+  month: string       // "2026-06"
+  amount: number      // 预算总额
+}

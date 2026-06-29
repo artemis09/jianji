@@ -5,4 +5,5 @@ export const KEYS = {
   THEME: 'theme',
   USER: 'user',
   LAST_SYNC_AT: 'lastSyncAt',
+  BUDGET: 'budget',
 } as const

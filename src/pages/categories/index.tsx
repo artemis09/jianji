@@ -1,10 +1,11 @@
 import { View, Text, Input, Button } from '@tarojs/components'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Taro, { useDidShow } from '@tarojs/taro'
 import PageHeader from '@/components/PageHeader'
 import SegToggle from '@/components/SegToggle'
+import CategoryGrid from '@/components/CategoryGrid'
 import { useThemePageClass } from '@/hooks/useThemePageClass'
-import { getCategories, addCategory, deleteCategory } from '@/services/categories'
+import { getCategories, addCategory, deleteCategory, updateCategory } from '@/services/categories'
 import { useAuth } from '@/contexts/AuthContext'
 import type { RecordType, Category } from '@/types'
 import './index.scss'
@@ -21,7 +22,13 @@ export default function CategoriesPage() {
 
   useDidShow(refresh)
 
-  const list = categories.filter(c => c.type === type && c.userId === user?.openid)
+  const list = useMemo(
+    () => {
+      const filtered = categories.filter(c => c.type === type && c.userId === user?.openid)
+      return filtered.sort((a, b) => a.sort - b.sort)
+    },
+    [categories, type, user?.openid],
+  )
 
   const handleAdd = () => {
     if (!name.trim() || !user?.openid) return
@@ -46,12 +53,25 @@ export default function CategoriesPage() {
     }
   }
 
+  const handleReorder = (orderedIds: string[]) => {
+    orderedIds.forEach((id, index) => {
+      updateCategory(id, { sort: index })
+    })
+    refresh()
+  }
+
   return (
     <View className={pageClass}>
       <PageHeader title='分类管理' left='back' />
       <SegToggle value={type} onChange={setType} />
 
       <View className='page__body'>
+        <CategoryGrid
+          categories={list}
+          onSelect={() => {}}
+          onReorder={handleReorder}
+        />
+
         {list.map(cat => (
           <View key={cat._id} className='list-row'>
             <Text>{cat.icon} {cat.name}</Text>

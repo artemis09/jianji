@@ -31,6 +31,25 @@ function showBindError(err: unknown): void {
   Taro.showToast({ title: message, icon: 'none' })
 }
 
+function showPhoneAuthError(errMsg: string): void {
+  if (errMsg.includes('errno:112') || errMsg.includes('privacy agreement')) {
+    Taro.showModal({
+      title: '隐私协议未配置',
+      content:
+        '当前小程序尚未在微信公众平台声明「手机号」收集用途。\n\n' +
+        '请登录 mp.weixin.qq.com → 设置 → 服务内容声明 → 用户隐私保护指引，' +
+        '添加「手机号」并填写用途（账号识别与数据同步），保存后重新编译再试。',
+      showCancel: false,
+    })
+    return
+  }
+  if (errMsg.includes('privacy') || errMsg.includes('authorize')) {
+    Taro.showToast({ title: '请先同意隐私保护指引', icon: 'none' })
+    return
+  }
+  Taro.showToast({ title: '授权已取消', icon: 'none' })
+}
+
 export default function Login() {
   const { bindPhone, login } = useAuth()
   const pageClass = useThemePageClass('page login')
@@ -71,7 +90,7 @@ export default function Login() {
     }
 
     if (event.detail.errMsg !== 'getPhoneNumber:ok') {
-      Taro.showToast({ title: '授权已取消', icon: 'none' })
+      showPhoneAuthError(event.detail.errMsg)
       return
     }
 

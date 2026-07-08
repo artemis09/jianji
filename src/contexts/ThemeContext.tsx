@@ -2,7 +2,6 @@ import {
   createContext,
   useCallback,
   useContext,
-  useLayoutEffect,
   useMemo,
   useState,
   type PropsWithChildren,
@@ -26,6 +25,7 @@ export function ThemeProvider({ children }: PropsWithChildren) {
   const setTheme = useCallback((id: ThemeId) => {
     setThemeId(id)
     storage.setTheme(id)
+    applyPageBackground(THEMES[id].pageBg)
 
     const user = storage.getUser()
     if (user) {
@@ -41,10 +41,6 @@ export function ThemeProvider({ children }: PropsWithChildren) {
     }),
     [themeId, setTheme],
   )
-
-  useLayoutEffect(() => {
-    applyPageBackground(THEMES[themeId].pageBg)
-  }, [themeId])
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
 }

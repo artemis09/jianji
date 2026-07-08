@@ -12,6 +12,8 @@ export default defineAppConfig({
     'pages/agreement/index',
     'pages/privacy/index',
   ],
+  // 启用微信隐私合规检查（收集手机号等敏感信息必需）
+  __usePrivacyCheck__: true,
   window: {
     backgroundTextStyle: 'light',
     backgroundColor: '#1a1a1a',

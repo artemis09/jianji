@@ -1,0 +1,69 @@
+.privacy-auth-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-page);
+}
+
+.privacy-auth-modal__mask {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.privacy-auth-modal__panel {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 620px;
+  padding: 40px 32px 32px;
+}
+
+.privacy-auth-modal__title {
+  display: block;
+  font-size: var(--text-title);
+  font-weight: 700;
+  line-height: 1.4;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+.privacy-auth-modal__desc {
+  display: block;
+  font-size: var(--text-secondary-size);
+  line-height: 1.75;
+  color: var(--text-secondary);
+
+  Text {
+    display: inline;
+  }
+}
+
+.privacy-auth-modal__link {
+  color: var(--primary, #ffb800);
+}
+
+.privacy-auth-modal__actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.privacy-auth-modal__btn {
+  flex: 1;
+  height: 88px;
+  line-height: 88px;
+  border-radius: 44px;
+  font-size: var(--text-list);
+  margin: 0;
+  padding: 0;
+}
+
+.privacy-auth-modal__btn--ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--surface-border);
+}

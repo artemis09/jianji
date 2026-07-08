@@ -5,7 +5,7 @@ import { useDataRefresh } from '@/hooks/useDataRefresh'
 import ThemedSelectorPicker from '@/components/ThemedPicker/ThemedSelectorPicker'
 import TabPageShell from '@/components/TabPageShell'
 import { getRecords } from '@/services/records'
-import { triggerSync, getPendingSyncCount } from '@/services/sync'
+import { triggerSync } from '@/services/sync'
 import { calcMonthSummary } from '@/utils/stats'
 import { formatAmount } from '@/utils/amount'
 import type { Record } from '@/types'
@@ -51,7 +51,7 @@ export default function BillPage() {
 
   useDidShow(() => {
     refresh()
-    if (getPendingSyncCount() > 0) triggerSync()
+    void triggerSync()
   })
 
   const years = useMemo(() => collectYears(records), [records])

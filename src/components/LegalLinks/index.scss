@@ -1,0 +1,15 @@
+.legal-links__text {
+  display: block;
+  font-size: var(--text-caption);
+  line-height: 1.65;
+  text-align: center;
+  color: var(--text-secondary);
+
+  Text {
+    display: inline;
+  }
+}
+
+.legal-links__link {
+  color: var(--primary, #ffb800);
+}

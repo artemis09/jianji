@@ -185,10 +185,16 @@ page {
   font-size: 30px;
   font-weight: 600;
   border: none;
+  margin-top: 8px;
 
   &::after {
     border: none;
   }
+}
+
+.auth-gate__legal {
+  margin-top: 8px;
+  padding: 0 8px;
 }
 
 /* ── 统一页面布局 ── */

@@ -1,6 +1,7 @@
 {
   "miniprogramRoot": "dist/",
   "cloudfunctionRoot": "cloud/functions/",
+  "__usePrivacyCheck__": true,
   "projectname": "jianji",
   "description": "简记微信小程序",
   "appid": "wxa81a5c44882338b4",

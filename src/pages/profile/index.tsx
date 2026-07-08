@@ -31,17 +31,27 @@ export default function ProfilePage() {
   })
 
   const handleSync = async () => {
-    if (syncing || pending === 0) return
+    if (syncing) return
     setSyncing(true)
     Taro.showLoading({ title: '同步中…', mask: true })
     try {
       const result = await triggerFullSync()
       refreshPending()
-      if (result.complete) {
-        Taro.showToast({ title: '同步完成', icon: 'success' })
-      } else if (result.syncedCount > 0) {
+      const pulled = result.pulledRecords + result.pulledCategories
+      if (result.complete && result.syncedCount === 0 && pulled === 0) {
+        Taro.showToast({ title: '已是最新数据', icon: 'success' })
+      } else if (result.complete) {
+        const parts: string[] = []
+        if (result.syncedCount > 0) parts.push(`上传 ${result.syncedCount} 条`)
+        if (result.pulledRecords > 0) parts.push(`记录 ${result.pulledRecords} 条`)
+        if (result.pulledCategories > 0) parts.push(`分类 ${result.pulledCategories} 个`)
         Taro.showToast({
-          title: `已同步 ${result.syncedCount} 条，${result.remainingCount} 条失败`,
+          title: parts.length > 0 ? `同步完成：${parts.join('，')}` : '同步完成',
+          icon: 'success',
+        })
+      } else if (result.syncedCount > 0 || pulled > 0) {
+        Taro.showToast({
+          title: `部分完成，${result.remainingCount} 条待重试`,
           icon: 'none',
         })
       } else {
@@ -99,15 +109,13 @@ export default function ProfilePage() {
       <View className='page__body'>
         <View className='surface-card page-profile__user'>
           <Text className='page-profile__phone'>{user?.phone || '未绑定手机'}</Text>
-          <Text className='page-profile__sync'>待同步 {pending} 条</Text>
-          {pending > 0 && (
-            <View
-              className={`page-profile__sync-btn pressable${syncing ? ' page-profile__sync-btn--disabled' : ''}`}
-              onClick={handleSync}
-            >
-              <Text>{syncing ? '同步中…' : '立即同步'}</Text>
-            </View>
-          )}
+          <Text className='page-profile__sync'>待上传 {pending} 条</Text>
+          <View
+            className={`page-profile__sync-btn pressable${syncing ? ' page-profile__sync-btn--disabled' : ''}`}
+            onClick={handleSync}
+          >
+            <Text>{syncing ? '同步中…' : '立即同步'}</Text>
+          </View>
         </View>
         {MENU.map(item => (
           <View key={item.title} className='list-row pressable' onClick={() => onItem(item)}>

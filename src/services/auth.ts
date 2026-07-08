@@ -2,6 +2,7 @@ import type { User } from '@/types'
 import { initDefaultCategories } from './categories'
 import { callCloudFunction, initCloud } from './cloud'
 import { getPendingSyncCount, pullFromCloud, scheduleSync } from './sync'
+import { notifyDataChanged } from './data-events'
 import { storage } from './storage'
 
 async function fetchCloudLogin(): Promise<User> {
@@ -16,8 +17,11 @@ async function fetchCloudLogin(): Promise<User> {
     storage.setUser(user)
   }
 
-  // 从云端拉取已有数据，避免新设备产生重复
-  await pullFromCloud()
+  // 从云端拉取已有数据，按 _id 合并，避免新设备产生重复
+  const pullResult = await pullFromCloud()
+  if (pullResult.pulledRecords > 0 || pullResult.pulledCategories > 0) {
+    notifyDataChanged()
+  }
 
   // 版本升级时替换为最新预设分类
   initDefaultCategories(openid)
@@ -31,7 +35,11 @@ async function fetchCloudLogin(): Promise<User> {
 export async function silentLogin(): Promise<User> {
   const cached = storage.getUser()
   if (cached?.openid) {
+    const pullResult = await pullFromCloud()
     initDefaultCategories(cached.openid)
+    if (pullResult.pulledRecords > 0 || pullResult.pulledCategories > 0) {
+      notifyDataChanged()
+    }
     if (getPendingSyncCount() > 0) {
       scheduleSync(500)
     }

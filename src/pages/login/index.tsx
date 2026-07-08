@@ -6,6 +6,7 @@ import { useThemePageClass } from '@/hooks/useThemePageClass'
 import { isCloudFunctionNotFoundError, isCloudNotEnabledError } from '@/services/cloud'
 import { storage } from '@/services/storage'
 import { triggerFullSync } from '@/services/sync'
+import { openWechatPrivacyContract } from '@/utils/wechat-privacy'
 import './index.scss'
 
 const AGREEMENT_URL = '/pages/agreement/index'
@@ -155,6 +156,8 @@ export default function Login() {
               <Text className='login__link' onClick={openAgreement}>《用户服务协议》</Text>
               <Text>和</Text>
               <Text className='login__link' onClick={openPrivacy}>《隐私政策》</Text>
+              <Text>及</Text>
+              <Text className='login__link' onClick={openWechatPrivacyContract}>《用户隐私保护指引》</Text>
               <Text>，并授权获取微信手机号用于账号识别与数据同步</Text>
             </View>
           </View>

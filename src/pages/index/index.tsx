@@ -2,6 +2,7 @@ import { View, Text, Button } from '@tarojs/components'
 import { useState, useMemo, useCallback } from 'react'
 import Taro, { useReady, useDidShow } from '@tarojs/taro'
 import { useDataRefresh } from '@/hooks/useDataRefresh'
+import LegalLinks from '@/components/LegalLinks'
 import ProfileEntry from '@/components/ProfileEntry'
 import MonthSwitcher from '@/components/MonthSwitcher'
 import AddSheet from '@/components/AddSheet'
@@ -83,6 +84,11 @@ export default function Index() {
         >
           去登录
         </Button>
+        <LegalLinks
+          className='auth-gate__legal'
+          prefix='登录前请阅读并同意'
+          suffix='。绑定手机号仅用于账号识别与数据同步。'
+        />
       </View>
     )
   }

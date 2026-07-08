@@ -10,6 +10,7 @@ import {
   withTimeout,
 } from './cloud'
 import { storage } from './storage'
+import { notifyDataChanged } from './data-events'
 
 type Collection = PendingOp['collection']
 type Action = PendingOp['action']
@@ -22,6 +23,13 @@ export interface SyncResult {
   syncedCount: number
   remainingCount: number
   complete: boolean
+  pulledRecords: number
+  pulledCategories: number
+}
+
+interface MergeStats {
+  added: number
+  updated: number
 }
 
 let collectionHintShown = false
@@ -221,6 +229,8 @@ async function drainPendingQueue(): Promise<SyncResult> {
     syncedCount,
     remainingCount,
     complete: remainingCount === 0,
+    pulledRecords: 0,
+    pulledCategories: 0,
   }
 }
 
@@ -292,6 +302,8 @@ export async function triggerFullSync(): Promise<SyncResult> {
       syncedCount: 0,
       remainingCount: getPendingSyncCount(),
       complete: false,
+      pulledRecords: 0,
+      pulledCategories: 0,
     }
   }
 
@@ -305,6 +317,8 @@ export async function triggerFullSync(): Promise<SyncResult> {
         syncedCount: 0,
         remainingCount: getPendingSyncCount(),
         complete: false,
+        pulledRecords: 0,
+        pulledCategories: 0,
       }
     }
 
@@ -314,17 +328,28 @@ export async function triggerFullSync(): Promise<SyncResult> {
         syncedCount: 0,
         remainingCount: getPendingSyncCount(),
         complete: false,
+        pulledRecords: 0,
+        pulledCategories: 0,
       }
     }
 
-    const result = await drainPendingQueue()
+    const pushResult = await drainPendingQueue()
 
     const user = storage.getUser()
-    if (user?.openid && result.complete) {
+    if (user?.openid && pushResult.complete) {
       await purgeOrphanCloudCategories(user.openid)
     }
 
-    return result
+    const pullResult = await pullFromCloud()
+    if (pullResult.pulledRecords > 0 || pullResult.pulledCategories > 0) {
+      notifyDataChanged()
+    }
+
+    return {
+      ...pushResult,
+      pulledRecords: pullResult.pulledRecords,
+      pulledCategories: pullResult.pulledCategories,
+    }
   } finally {
     syncing = false
   }
@@ -352,6 +377,12 @@ export async function triggerSync(): Promise<boolean> {
       await purgeOrphanCloudCategories(user.openid)
     }
 
+    const pullResult = await pullFromCloud()
+    if (pullResult.pulledRecords > 0 || pullResult.pulledCategories > 0) {
+      notifyDataChanged()
+      progressed = true
+    }
+
     return progressed || storage.getPendingQueue().length === 0
   } finally {
     syncing = false
@@ -362,81 +393,149 @@ export function getPendingSyncCount(): number {
   return storage.getPendingQueue().length
 }
 
-/** 合并云端记录到本地（本地 pending / deleted 优先） */
-function mergeCloudRecords(userId: string, cloudRecords: BillRecord[]): void {
+const MAX_PULL_LIMIT = 100
+
+function getPendingEntityIds(collection: Collection): Set<string> {
+  return new Set(
+    dedupeQueue(storage.getPendingQueue())
+      .filter(op => op.collection === collection)
+      .map(op => op.payload._id),
+  )
+}
+
+async function fetchCloudCollection<T extends { _id: string }>(
+  collection: Collection,
+  userId: string,
+): Promise<T[]> {
+  const db = Taro.cloud.database()
+  const items: T[] = []
+  let skip = 0
+
+  while (true) {
+    const res = await db.collection(collection)
+      .where({ userId })
+      .skip(skip)
+      .limit(MAX_PULL_LIMIT)
+      .get()
+    const batch = res.data as T[]
+    if (batch.length === 0) break
+    items.push(...batch)
+    if (batch.length < MAX_PULL_LIMIT) break
+    skip += batch.length
+  }
+
+  return items
+}
+
+/** 按 _id 合并云端记录到本地，本地待同步/已删除优先，不产生重复 */
+function mergeCloudRecords(userId: string, cloudRecords: BillRecord[]): MergeStats {
   const all = storage.getRecords()
   const others = all.filter(r => r.userId !== userId)
   const localMap = new Map(all.filter(r => r.userId === userId).map(r => [r._id, r]))
+  const pendingIds = getPendingEntityIds('records')
+  let added = 0
+  let updated = 0
 
   for (const cloud of cloudRecords) {
     const local = localMap.get(cloud._id)
     if (!local) {
       localMap.set(cloud._id, { ...cloud, syncStatus: 'synced' })
+      added += 1
       continue
     }
-    if (local.syncStatus === 'pending' || local.syncStatus === 'deleted') continue
+    if (local.syncStatus === 'pending' || local.syncStatus === 'deleted' || pendingIds.has(local._id)) {
+      continue
+    }
 
     const cloudUpdated = cloud.updatedAt || cloud.createdAt || ''
     const localUpdated = local.updatedAt || local.createdAt || ''
     if (cloudUpdated > localUpdated) {
       localMap.set(cloud._id, { ...cloud, syncStatus: 'synced' })
+      updated += 1
     }
   }
 
   storage.setRecords([...others, ...localMap.values()])
+  return { added, updated }
 }
 
-const MAX_PULL_LIMIT = 100
+/** 按 _id 合并云端分类到本地，本地待同步优先，不产生重复 */
+function mergeCloudCategories(userId: string, cloudCategories: Category[]): MergeStats {
+  const all = storage.getCategories()
+  const others = all.filter(c => c.userId !== userId)
+  const localMap = new Map(all.filter(c => c.userId === userId).map(c => [c._id, c]))
+  const pendingIds = getPendingEntityIds('categories')
+  let added = 0
+  let updated = 0
 
-/** 登录后从云端拉取并合并数据 */
-export async function pullFromCloud(): Promise<void> {
+  for (const cloud of cloudCategories) {
+    const local = localMap.get(cloud._id)
+    if (!local) {
+      localMap.set(cloud._id, { ...cloud, syncStatus: 'synced' })
+      added += 1
+      continue
+    }
+    if (local.syncStatus === 'pending' || pendingIds.has(local._id)) {
+      continue
+    }
+
+    const changed = local.name !== cloud.name
+      || local.icon !== cloud.icon
+      || local.sort !== cloud.sort
+      || local.type !== cloud.type
+      || local.isDefault !== cloud.isDefault
+    if (changed) {
+      localMap.set(cloud._id, { ...local, ...cloud, syncStatus: 'synced' })
+      updated += 1
+    }
+  }
+
+  storage.setCategories([...others, ...localMap.values()])
+  return { added, updated }
+}
+
+export interface PullResult {
+  pulledRecords: number
+  pulledCategories: number
+}
+
+/** 从云端拉取并合并到本地（按 _id 去重，本地待同步数据优先） */
+export async function pullFromCloud(): Promise<PullResult> {
   const network = await Taro.getNetworkType()
-  if (network.networkType === 'none') return
+  if (network.networkType === 'none') {
+    return { pulledRecords: 0, pulledCategories: 0 }
+  }
 
   const user = storage.getUser()
-  if (!user?.openid) return
+  if (!user?.openid) {
+    return { pulledRecords: 0, pulledCategories: 0 }
+  }
 
   const ready = await initCloud()
-  if (!ready) return
+  if (!ready) {
+    return { pulledRecords: 0, pulledCategories: 0 }
+  }
 
-  const db = Taro.cloud.database()
-  const localCategories = storage.getCategories().filter(c => c.userId === user.openid)
-  const localRecords = storage.getRecords().filter(r => r.userId === user.openid)
-  const hasLocalCategories = localCategories.length > 0
-  const hasLocalRecords = localRecords.length > 0
+  let recordStats: MergeStats = { added: 0, updated: 0 }
+  let categoryStats: MergeStats = { added: 0, updated: 0 }
 
-  if (!hasLocalCategories) {
-    try {
-      const catRes = await db.collection('categories')
-        .where({ userId: user.openid })
-        .limit(MAX_PULL_LIMIT)
-        .get()
-      const cloudCategories = catRes.data as Category[]
-      if (cloudCategories.length > 0) {
-        const others = storage.getCategories().filter(c => c.userId !== user.openid)
-        storage.setCategories([...others, ...cloudCategories])
-      }
-    } catch (err) {
-      if (isCollectionNotExistError(err)) {
-        console.warn('pull categories: collection not exist')
-      } else {
-        console.warn('pull categories failed', err)
-      }
+  try {
+    const cloudCategories = await fetchCloudCollection<Category>('categories', user.openid)
+    if (cloudCategories.length > 0) {
+      categoryStats = mergeCloudCategories(user.openid, cloudCategories)
+    }
+  } catch (err) {
+    if (isCollectionNotExistError(err)) {
+      console.warn('pull categories: collection not exist')
+    } else {
+      console.warn('pull categories failed', err)
     }
   }
 
   try {
-    const recRes = await db.collection('records')
-      .where({ userId: user.openid })
-      .limit(MAX_PULL_LIMIT)
-      .get()
-    const cloudRecords = recRes.data as BillRecord[]
+    const cloudRecords = await fetchCloudCollection<BillRecord>('records', user.openid)
     if (cloudRecords.length > 0) {
-      if (!hasLocalRecords) {
-        storage.setRecords(cloudRecords)
-      } else {
-        mergeCloudRecords(user.openid, cloudRecords)
-      }
+      recordStats = mergeCloudRecords(user.openid, cloudRecords)
     }
   } catch (err) {
     if (isCollectionNotExistError(err)) {
@@ -445,6 +544,14 @@ export async function pullFromCloud(): Promise<void> {
       console.warn('pull records failed', err)
     }
   }
+
+  const pulledRecords = recordStats.added + recordStats.updated
+  const pulledCategories = categoryStats.added + categoryStats.updated
+  if (pulledRecords > 0 || pulledCategories > 0) {
+    storage.setLastSyncAt(Date.now())
+  }
+
+  return { pulledRecords, pulledCategories }
 }
 
 let listenerRegistered = false

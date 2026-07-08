@@ -12,7 +12,7 @@ import RankList from '@/components/RankList'
 import TabPageShell from '@/components/TabPageShell'
 import { getRecords } from '@/services/records'
 import { getCategories } from '@/services/categories'
-import { triggerSync, getPendingSyncCount } from '@/services/sync'
+import { triggerSync } from '@/services/sync'
 import { calcMonthSummary, buildTypedCategoryRank } from '@/utils/stats'
 import { formatAmount } from '@/utils/amount'
 import { getBudget } from '@/services/budget'
@@ -44,7 +44,7 @@ export default function StatsPage() {
 
   useDidShow(() => {
     refresh()
-    if (getPendingSyncCount() > 0) triggerSync()
+    void triggerSync()
   })
 
   const summary = calcMonthSummary(records, month)
